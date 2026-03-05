@@ -1,25 +1,34 @@
 #ifndef CHIPS_HPP
 #define CHIPS_HPP
 #include <cstdint>
+#include <vector>
 
 class Chip4017 {
-private:
-    uint8_t state{0};           // posição atual do contador
-    uint32_t Out{0};            // saídas Q0–Q9
-    uint8_t Qreset{10};         // limite de contagem (quantos QPins usar no projeto)
-    bool lastClock{false};      // para detectar borda de subida
-    bool ClockEnable{true};     // habilita/desabilita a contagem
+    private:
+        unsigned LimitReset;
+        uint32_t Out{0};
 
-    void updateOutputs();       // atualiza o valor de Out
+    public:
+        explicit Chip4017(unsigned limitReset) : LimitReset(limitReset){}
+        void shift();
+        void reset();
+        uint32_t getOut() const;
+        unsigned getLimitReset() const;
+};
 
-public:
-    explicit Chip4017(uint8_t Qreset = 10);
+class Chip4081 {
+    private:
+        std::vector<bool> input_A{4, false};  
+        std::vector<bool> input_B{4, false};
+        std::vector<bool> output_C{4, false};
+        void updateOutputs();
 
-    void setClockEnable(bool enable);
-    void reset();
-    void clock(bool level);
+    public:
+        Chip4081() = default;
 
-    uint32_t getOut() const;
+        void setInputA(int index, bool value);
+        void setInputB(int index, bool value);
+        bool getOutput(int index) const;
 };
 
 #endif

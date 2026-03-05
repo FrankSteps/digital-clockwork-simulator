@@ -10,28 +10,6 @@
 #include <bitset>
 #include "chips.hpp"
 
-int main() {
-    // apenas Q0 e Q1 ativos para este teste
-    const int Qreset = 2;
-    Chip4017 chip(Qreset);
-
-    bool clockLevel = false;
-    char input;
-
-    while (true) {
-        std::cout << std::bitset<Qreset>(chip.getOut()) << "  ";
-        input = std::cin.get();
-
-        if (input == 'q') {
-            break;
-        }
-        if (input == 'r') {
-            chip.reset();
-        }
-        if (input == '\n') {
-            clockLevel = !clockLevel;
-            chip.clock(clockLevel);
-        }
-    }
+int main(){
     return 0;
 }

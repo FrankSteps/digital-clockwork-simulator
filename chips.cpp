@@ -4,7 +4,7 @@
 /*
     Métodos da classe Chip4017
 */
-Chip4017::Chip4017(unsigned limitReset) : LimitReset(limitReset) {
+Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitReset), ClockEnable(clockEnable) {
     if (LimitReset < 1 || LimitReset > 10) {
         throw std::invalid_argument("LimitReset precisa estar entre 1 e 10.");
     }
@@ -12,14 +12,16 @@ Chip4017::Chip4017(unsigned limitReset) : LimitReset(limitReset) {
 }
 
 void Chip4017::shift() {
-    Out >>= 1;
-    if (Out == 0) {
-        Out = 1u << (LimitReset - 1);
+    if(ClockEnable){
+        Out >>= 1;
+        if (Out == 0) {
+            Out = 1u << (LimitReset - 1);
+        }
     }
 }
 
 void Chip4017::reset(){
-    Out = 1u << (LimitReset - 1);
+    Out = 1;
 }
 
 uint32_t Chip4017::getOut() const{
@@ -30,6 +32,7 @@ unsigned Chip4017::getLimitReset() const{
     return LimitReset;
 }
 
+
 /*
     Métodos da classe Chip4081
 */
@@ -39,7 +42,7 @@ void Chip4081::updateOutputs(){
     }
 }
 
-void Chip4081::setInputA(int index, bool value){
+void Chip4081::setInputA(size_t index, bool value){
     if(index < 0 || index >= 4){
         throw std::invalid_argument("Erro em inputA: Index precisa estar entre 0 e 4.");
     }
@@ -47,7 +50,7 @@ void Chip4081::setInputA(int index, bool value){
     updateOutputs();
 }
 
-void Chip4081::setInputB(int index, bool value){
+void Chip4081::setInputB(size_t index, bool value){
     if(index < 0 || index >= 4){
         throw std::invalid_argument("Erro em inputB: Index precisa estar entre 0 e 4.");
     }
@@ -55,9 +58,22 @@ void Chip4081::setInputB(int index, bool value){
     updateOutputs();
 }
 
-bool Chip4081::getOutput(int index) const{
+bool Chip4081::getOutput(size_t index) const{
     if(index < 0 || index > 4){
         throw std::invalid_argument("Erro em output: Index precisa estar entre 0 e 4.");
     }
     return output_C[index];
+}
+
+
+/*
+    Métodos da classe Chip4029
+*/
+
+bool Chip4029::getOutput(size_t index) const{
+    return outputs[index];
+}
+
+bool Chip4029::getCarryOut() const{
+    return carryOut;
 }

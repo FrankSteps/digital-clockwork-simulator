@@ -6,7 +6,7 @@
 */
 Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitReset), ClockEnable(clockEnable) {
     if (LimitReset < 1 || LimitReset > 10) {
-        throw std::invalid_argument("LimitReset precisa estar entre 1 e 10.");
+        throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 0 to 3.");
     }
     reset();
 }
@@ -44,7 +44,7 @@ void Chip4081::updateOutputs(){
 
 void Chip4081::setInputA(size_t index, bool value){
     if(index < 0 || index >= 4){
-        throw std::invalid_argument("Erro em inputA: Index precisa estar entre 0 e 4.");
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     input_A[index] = value;
     updateOutputs();
@@ -52,7 +52,7 @@ void Chip4081::setInputA(size_t index, bool value){
 
 void Chip4081::setInputB(size_t index, bool value){
     if(index < 0 || index >= 4){
-        throw std::invalid_argument("Erro em inputB: Index precisa estar entre 0 e 4.");
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     input_B[index] = value;
     updateOutputs();
@@ -60,7 +60,7 @@ void Chip4081::setInputB(size_t index, bool value){
 
 bool Chip4081::getOutput(size_t index) const{
     if(index < 0 || index > 4){
-        throw std::invalid_argument("Erro em output: Index precisa estar entre 0 e 4.");
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     return output_C[index];
 }
@@ -70,10 +70,50 @@ bool Chip4081::getOutput(size_t index) const{
     Métodos da classe Chip4029
 */
 
+
+
 bool Chip4029::getOutput(size_t index) const{
+    if(index < 0 || index > 4){
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+    }
     return outputs[index];
 }
 
 bool Chip4029::getCarryOut() const{
     return carryOut;
+}
+
+void Chip4029::setCarryIn(bool value) {
+    carryIn = value;
+}
+
+void Chip4029::setPresetEnable(){
+    presetEnable = true;
+    outputs = presetInputs;
+}
+
+void Chip4029::setBinaryDecade(bool value){  
+    binaryDecade = value;
+}
+
+void Chip4029::setUpDown(bool value){
+    upDown = value;
+}
+
+void Chip4029::clock() {
+    if (presetEnable) {
+        outputs = presetInputs;
+    }
+
+    if (upDown){
+        decrement();
+    }
+    else{
+        increment();
+    }
+}
+
+void Chip4029::reset() {
+    outputs = presetInputs; 
+    carryOut = false;       
 }

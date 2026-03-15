@@ -11,5 +11,6 @@
 #include "chips.hpp"
 
 int main(){
+    std::cout << "nothing here yet" << std::endl;
     return 0;
 }

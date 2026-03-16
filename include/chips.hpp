@@ -2,22 +2,27 @@
 #define CHIPS_HPP
 
 #include <cstdint>
-#include <vector>
 #include <array>
 #include <stdexcept>
 
+
+
 class Chip4017 {
     private:
+        std::array <bool, 10> outputs{0,0,0,0,0,0,0,0,0,0};
+
         unsigned LimitReset;
         bool ClockEnable = false;
-        uint32_t Out{0};
-        std::vector <bool> Out1{0,0,0,0,0,0,0,0,0,0};  // irei implementar isso posteriormente
+
+        int value = 0;  
 
     public:
         explicit Chip4017(unsigned limitReset, bool clockEnable);
+
         void shift();
         void reset();
-        uint32_t getOut() const;
+
+        bool getOutput(size_t index) const;
         unsigned getLimitReset() const;
 };
 
@@ -25,9 +30,9 @@ class Chip4017 {
 
 class Chip4081 {
     protected:
-        std::vector<bool> input_A = std::vector<bool>(4, false);
-        std::vector<bool> input_B = std::vector<bool>(4, false);
-        std::vector<bool> output_C = std::vector<bool>(4, false);
+        std::array<bool, 4> input_A  = {0,0,0,0};
+        std::array<bool, 4> input_B  = {0,0,0,0};
+        std::array<bool, 4> output_C = {0,0,0,0};
         
         void updateOutputs();
 
@@ -38,6 +43,7 @@ class Chip4081 {
         void setInputB(size_t index, bool value);
         bool getOutput(size_t index) const;
 };
+
 
 
 class Chip4029 {
@@ -79,6 +85,8 @@ class Chip4029 {
         void clock();
 };
 
+
+
 class Chip4511{
     private:
         std::array<bool, 7> segmentsOut{0,0,0,0,0,0,0};
@@ -100,6 +108,8 @@ class Chip4511{
 
         bool getSegmentsOut(size_t index) const;
 };
+
+
 
 class Chip4040{
     private:

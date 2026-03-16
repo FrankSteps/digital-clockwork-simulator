@@ -15,31 +15,44 @@ Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitRese
 }
 
 void Chip4017::shift() {
-    if(ClockEnable){
-        Out >>= 1;
-        if (Out == 0) {
-            Out = 1u << (LimitReset - 1);
+    if (!ClockEnable) {
+        return; 
+    }
+
+    value = 0;
+    for (size_t i = 0; i < 10; i++) {
+        if (outputs[i]) {
+            value |= (1 << i);
         }
+    }
+    value <<= 1;
+
+    if (value >= (1u << LimitReset)) {
+        value = 1;
+    }
+
+    for (size_t i = 0; i < 10; i++) {
+        outputs[i] = (value >> i) & 1;
     }
 }
 
-void Chip4017::reset(){
-    Out = 1;
+void Chip4017::reset() {
+    outputs = {1,0,0,0,0,0,0,0,0,0};
 }
 
-uint32_t Chip4017::getOut() const{
-    return Out;
+bool Chip4017::getOutput(size_t index) const {
+    return outputs[index];
 }
 
-unsigned Chip4017::getLimitReset() const{
+unsigned Chip4017::getLimitReset() const {
     return LimitReset;
 }
-
 
 
 /*
     Métodos da classe Chip4081
 */
+
 void Chip4081::updateOutputs(){
     for(int i = 0; i < 4; i++){
         output_C[i] = input_A[i] && input_B[i];

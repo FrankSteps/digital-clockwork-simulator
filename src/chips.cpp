@@ -47,7 +47,7 @@ void Chip4081::updateOutputs(){
 }
 
 void Chip4081::setInputA(size_t index, bool value){
-    if(index < 0 || index >= 4){
+    if(index >= 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     input_A[index] = value;
@@ -55,7 +55,7 @@ void Chip4081::setInputA(size_t index, bool value){
 }
 
 void Chip4081::setInputB(size_t index, bool value){
-    if(index < 0 || index >= 4){
+    if(index >= 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     input_B[index] = value;
@@ -63,7 +63,7 @@ void Chip4081::setInputB(size_t index, bool value){
 }
 
 bool Chip4081::getOutput(size_t index) const{
-    if(index < 0 || index > 4){
+    if(index > 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     return output_C[index];
@@ -76,7 +76,7 @@ bool Chip4081::getOutput(size_t index) const{
 */
 
 bool Chip4029::getOutput(size_t index) const{
-    if(index < 0 || index > 4){
+    if(index > 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     return outputs[index];

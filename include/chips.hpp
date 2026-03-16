@@ -1,5 +1,6 @@
 #ifndef CHIPS_HPP
 #define CHIPS_HPP
+
 #include <cstdint>
 #include <vector>
 #include <array>
@@ -27,6 +28,7 @@ class Chip4081 {
         std::vector<bool> input_A = std::vector<bool>(4, false);
         std::vector<bool> input_B = std::vector<bool>(4, false);
         std::vector<bool> output_C = std::vector<bool>(4, false);
+        
         void updateOutputs();
 
     public:
@@ -53,78 +55,10 @@ class Chip4029 {
         bool binaryDecade = false;
         bool carryOut = false;
 
+        int value = 0;
 
-        void increment() {
-            int value = 0;
-        
-            for (size_t i = 0; i < 4; i++) {
-                if (outputs[i]) {
-                    value |= (1 << i);
-                }
-            }
-        
-            if (carryIn) {
-                value = value + 2;
-            } else {
-                value = value + 1;
-            }
-        
-            if (binaryDecade) {
-                if (value > 9) {
-                    value = value % 10;
-                    carryOut = true;
-                } else {
-                    carryOut = false;
-                }
-            } else {
-                if (value > 15) {
-                    value = value % 16;
-                    carryOut = true;
-                } else {
-                    carryOut = false;
-                }
-            }
-        
-            for (size_t i = 0; i < 4; i++) {
-                outputs[i] = (value >> i) & 1;
-            }
-        }
-
-        void decrement() {
-            int value = 0;
-        
-            for (size_t i = 0; i < 4; i++) {
-                if (outputs[i]) {
-                    value |= (1 << i);
-                }
-            }
-        
-            if (carryIn) {
-                value = value - 2;
-            } else {
-                value = value - 1;
-            }
-        
-            if (binaryDecade) {
-                if (value < 0) {
-                    value = 10 + value; 
-                    carryOut = true;
-                } else {
-                    carryOut = false;
-                }
-            } else {
-                if (value < 0) {
-                    value = 16 + value; 
-                    carryOut = true;
-                } else {
-                    carryOut = false;
-                }
-            }
-        
-            for (size_t i = 0; i < 4; i++) {
-                outputs[i] = (value >> i) & 1;
-            }
-        }
+        void increment();
+        void decrement();
 
     public:
         explicit Chip4029(const std::array<bool,4>& presetInputs){
@@ -155,7 +89,7 @@ class Chip4511{
         bool latchEnb = false; 
 
         void updateSegmentsOut();
-        
+
     public:
         Chip4511() = default;
 
@@ -165,6 +99,21 @@ class Chip4511{
         void setInputs(std::array<bool, 4> index);
 
         bool getSegmentsOut(size_t index) const;
+};
+
+class Chip4040{
+    private:
+        std::array<bool, 12> outputs = {0,0,0,0,0,0,0,0,0,0,0,0};
+        int value = 0;
+        void increment();
+
+    public:
+        Chip4040() = default;
+
+        void reset();
+        void clock();
+
+        bool getOutput(size_t value) const;
 };
 
 #endif

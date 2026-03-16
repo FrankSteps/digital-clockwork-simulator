@@ -82,6 +82,82 @@ bool Chip4029::getOutput(size_t index) const{
     return outputs[index];
 }
 
+
+void Chip4029::increment(){
+    value = 0;
+
+    for (size_t i = 0; i < 4; i++) {
+        if (outputs[i]) {
+            value |= (1 << i);
+        }
+    }
+
+    if (carryIn) {
+        value = value + 2;
+    } else {
+        value = value + 1;
+    }
+
+    if (binaryDecade) {
+        if (value > 9) {
+            value = value % 10;
+            carryOut = true;
+        } else {
+            carryOut = false;
+        }
+    } else {
+        if (value > 15) {
+            value = value % 16;
+            carryOut = true;
+        } else {
+            carryOut = false;
+        }
+    }
+
+    for (size_t i = 0; i < 4; i++) {
+        outputs[i] = (value >> i) & 1;
+    }
+}
+
+
+void Chip4029::decrement(){
+    value = 0;
+
+    for (size_t i = 0; i < 4; i++) {
+        if (outputs[i]) {
+            value |= (1 << i);
+        }
+    }
+
+    if (carryIn) {
+        value = value - 2;
+    } else {
+        value = value - 1;
+    }
+
+    if (binaryDecade) {
+        if (value < 0) {
+            value = 10 + value; 
+            carryOut = true;
+        } else {
+            carryOut = false;
+        }
+    } else {
+        if (value < 0) {
+            value = 16 + value; 
+            carryOut = true;
+        } else {
+            carryOut = false;
+        }
+    }
+
+    for (size_t i = 0; i < 4; i++) {
+        outputs[i] = (value >> i) & 1;
+    }
+}
+
+
+
 bool Chip4029::getCarryOut() const{
     return carryOut;
 }
@@ -151,19 +227,21 @@ void Chip4511::setInputs(std::array<bool,4> setInputs){
 
 void Chip4511::updateSegmentsOut(){
     if(lampTest){
-        segmentsOut = {1,1,1,1,1,1,1};
+        segmentsOut.fill(1);
         return;
     }
 
     if(blanking){
-        segmentsOut = {0,0,0,0,0,0,0};
+        segmentsOut.fill(0);
         return;
     }
 
-    int value = inputs[0] 
-              | (inputs[1] << 1) 
-              | (inputs[2] << 2) 
-              | (inputs[3] << 3);
+    int value = 0;
+    for (size_t i = 0; i < 4; i++) {
+        if (inputs[i]) {
+            value |= (1 << i);
+        }
+    }
 
     /*
      Display: 
@@ -192,10 +270,46 @@ void Chip4511::updateSegmentsOut(){
     if(value < 10){
         segmentsOut = output[value];
     }else{
-        segmentsOut = {0,0,0,0,0,0,0};
+        segmentsOut.fill(0);
     }
 }
 
-bool Chip4511::getSegmentsOut(size_t index) const{
+
+bool Chip4511::getSegmentsOut(size_t index) const {
+    if(index >= segmentsOut.size()){
+        return false;
+    }
     return segmentsOut[index];
+}
+
+
+
+/*
+    Métodos da classe Chip4040
+*/
+
+void Chip4040::reset(){
+    outputs.fill(0);
+}
+
+void Chip4040::increment(){
+    value = 0;
+    for(size_t i = 0; i < 12; i++){
+        if(outputs[i]){
+            value |= (1 << i);
+        }
+    }
+
+    value = (value + 1) & 0xFFF;
+    for(size_t i = 0; i < 12; i++){
+        outputs[i] = (value >> i) & 1;
+    }
+}
+
+void Chip4040::clock(){
+    increment();
+}
+
+bool Chip4040::getOutput(size_t index) const{
+    return outputs[index];
 }

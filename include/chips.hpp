@@ -39,7 +39,7 @@ class Chip4081 {
 
 
 class Chip4029 {
-    protected:
+    private:
         std::array<bool,4> presetInputs{0,0,0,0};
         std::array<bool,4> outputs{0,0,0,0};
 
@@ -143,6 +143,28 @@ class Chip4029 {
 
         void reset();
         void clock();
+};
+
+class Chip4511{
+    private:
+        std::array<bool, 7> segmentsOut{0,0,0,0,0,0,0};
+        std::array<bool, 4> inputs{0,0,0,0};
+
+        bool lampTest = false;
+        bool blanking = false;
+        bool latchEnb = false; 
+
+        void updateSegmentsOut();
+        
+    public:
+        Chip4511() = default;
+
+        void setLampTest(bool value);
+        void setBlanking(bool value);
+        void setLatchEnb(bool value);
+        void setInputs(std::array<bool, 4> index);
+
+        bool getSegmentsOut(size_t index) const;
 };
 
 #endif

@@ -7,7 +7,7 @@ void printChip(const Chip4029& chip, const std::string& name) {
     for (int i = 3; i >= 0; i--) {
         std::cout << chip.getOutput(i);
     }
-    std::cout << "  CarryOut: " << chip.getCarryOut() << std::endl;
+    std::cout << "  Carry Out: " << chip.getCarryOut() << std::endl;
 }
 
 int main() {

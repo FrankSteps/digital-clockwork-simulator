@@ -1,9 +1,12 @@
 #include "chips.hpp"
 #include <iostream>
 
+
+
 /*
     Métodos da classe Chip4017
 */
+
 Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitReset), ClockEnable(clockEnable) {
     if (LimitReset < 1 || LimitReset > 10) {
         throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 0 to 3.");
@@ -31,6 +34,7 @@ uint32_t Chip4017::getOut() const{
 unsigned Chip4017::getLimitReset() const{
     return LimitReset;
 }
+
 
 
 /*
@@ -66,11 +70,10 @@ bool Chip4081::getOutput(size_t index) const{
 }
 
 
+
 /*
     Métodos da classe Chip4029
 */
-
-
 
 bool Chip4029::getOutput(size_t index) const{
     if(index < 0 || index > 4){
@@ -116,4 +119,83 @@ void Chip4029::clock() {
 void Chip4029::reset() {
     outputs = presetInputs; 
     carryOut = false;       
+}
+
+
+
+/*
+    Métodos da classe Chip4511
+*/
+
+void Chip4511::setLampTest(bool value){
+    lampTest = value;
+    updateSegmentsOut();
+}
+
+void Chip4511::setBlanking(bool value){
+    blanking = value;
+    updateSegmentsOut();
+}
+
+void Chip4511::setLatchEnb(bool value){
+    latchEnb = value;
+    updateSegmentsOut();
+}
+
+void Chip4511::setInputs(std::array<bool,4> setInputs){
+    if(!latchEnb){
+        inputs = setInputs;
+        updateSegmentsOut();
+    }
+}
+
+void Chip4511::updateSegmentsOut(){
+    if(lampTest){
+        segmentsOut = {1,1,1,1,1,1,1};
+        return;
+    }
+
+    if(blanking){
+        segmentsOut = {0,0,0,0,0,0,0};
+        return;
+    }
+
+    int value = inputs[0] 
+              | (inputs[1] << 1) 
+              | (inputs[2] << 2) 
+              | (inputs[3] << 3);
+
+    /*
+     Display: 
+        a 
+      f   b
+        g
+      e   c
+        d   
+
+    segmentsOut = {a, b, c, d, e, f, g};
+    */
+
+    static const std::array<std::array<bool, 7>, 10> output{{
+        {1,1,1,1,1,1,0}, // 0
+        {0,1,1,0,0,0,0}, // 1
+        {1,1,0,1,1,0,1}, // 2
+        {1,1,1,1,0,0,1}, // 3
+        {0,1,1,0,0,1,1}, // 4 
+        {1,0,1,1,0,1,1}, // 5
+        {1,0,1,1,1,1,1}, // 6
+        {1,1,1,0,0,0,0}, // 7
+        {1,1,1,1,1,1,1}, // 8
+        {1,1,1,1,0,1,1}  // 9
+    }};
+
+    if(value < 10){
+        segmentsOut = output[value];
+    }else{
+        segmentsOut = {0,0,0,0,0,0,0};
+    }
+}
+
+bool Chip4511::getSegmentsOut(size_t index) const{
+    return segmentsOut[index];
 }

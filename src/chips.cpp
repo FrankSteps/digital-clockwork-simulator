@@ -2,7 +2,6 @@
 #include <iostream>
 
 
-
 /*
     Métodos da classe Chip4017
 */

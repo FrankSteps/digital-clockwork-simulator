@@ -5,7 +5,7 @@
 void printChip(const Chip4017& chip, const std::string& name) {
     std::cout << name << ": ";
     unsigned n = chip.getLimitReset();
-    for (int i = n-1; i >= 0; --i) {
+    for (int i = n-1; i >= 0; i--) {
         std::cout << chip.getOutput(i);
     }
     std::cout << std::endl;

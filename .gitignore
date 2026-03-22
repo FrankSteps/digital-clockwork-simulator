@@ -1,8 +1,8 @@
-.vscode/
-builds/
-tests/
-
 *.exe
 *.out
 *.bin
 *.elf
+
+builds/
+
+.vscode/

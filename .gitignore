@@ -1,7 +1,8 @@
+.vscode/
+builds/
+tests/
+
 *.exe
 *.out
 *.bin
 *.elf
-*.vscode/extensions.json
-*builds/
-*tests/

@@ -3,3 +3,5 @@
 *.bin
 *.elf
 *.vscode/extensions.json
+*builds/
+*tests/

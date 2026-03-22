@@ -29,6 +29,18 @@ This repository serves as a personal experimental environment to:
 
 ---
 
+
+
+```
+
+# compile clockwork 
+g++ src/digitalClockwork.cpp src/chips.cpp src/freqGenerator.cpp -Iinclude -o builds/digitalclockwork
+
+# run clockwork 
+./builds/digitalclockwork
+
+```
+
 ## License
 
 This project is distributed under the **GNU General Public License (GPL)**.

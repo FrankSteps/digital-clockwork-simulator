@@ -1,16 +1,53 @@
 /*
-    Esta parte do código eu escrevi apenas para testar a classe Chip4017 reformulada.
-    A diferença do Chip4017 que está neste projeto para os demais é que neste eu busquei 
-    emular o chip da melhor maneira possível e farei isso com os demais.
-    
-    Confira o arquivo "chips.hpp" e "chips.cpp"
+[PT-BR]
+
+
+[EN-US]
+
 */
 
-#include <iostream>
-#include <bitset>
+// LIBRARIES
+#include "freqGenerator.hpp"
 #include "chips.hpp"
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <thread>
+#include <chrono>
+#include <atomic>
+#include <mutex>
+#include <array>
+
 
 int main(){
-    std::cout << "nothing here yet" << std::endl;
+    // VECTORS
+    std::vector<Chip4029> cd4029;               
+    std::vector<Chip4511> cd4511;               
+    std::vector<Chip4081> cd4081;               
+
+
+    // CONSTANTS
+    const std::array<bool, 4> presetZero = {0,0,0,0};
+
+
+    // CREATE OBJECTS
+    FreqGenerator clk;                     // frequency: 60 Hz       
+    Chip4017 cd4017(2, true);              // AM/PM indicator
+    Chip4040 cd4040;                       
+    
+    for(int i = 0; i < 4; i++) {
+        cd4029.emplace_back(presetZero);
+        cd4511.emplace_back(); 
+        if(i % 2 == 0){
+            cd4081.emplace_back();
+        }
+    }  
+
+    // CONFIGURATIONS
+    for(int i = 0; i < 4; i++){
+        cd4029[i].setBinaryDecade(true);
+        cd4029[i].setUpDown(false);
+    }
+
     return 0;
 }

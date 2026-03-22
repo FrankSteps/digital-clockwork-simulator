@@ -29,7 +29,7 @@ int main() {
         if(!lastState && curState){ 
             cd4040.clock();
 
-            bool q5 = cd4040.getOutput(2);
+            bool q5 = cd4040.getOutput(5);
             if(!last4040State && q5){ 
                 cd4029.clock(); 
                 printChip(cd4029, "Chip_4029");

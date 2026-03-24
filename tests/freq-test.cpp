@@ -36,7 +36,6 @@ int main() {
             }
             last4040State = q5;
         }
-
         lastState = curState;
     }
 

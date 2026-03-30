@@ -81,7 +81,6 @@ class Chip4029 {
         bool getCarryOut() const;
         bool getOutput(size_t index) const;
 
-        void reset();
         void clock();
 };
 

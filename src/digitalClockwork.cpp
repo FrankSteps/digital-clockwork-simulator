@@ -99,6 +99,7 @@ class DigitalClockworkFunctions{
             cd4017 = chip4017;
             cd4040 = chip4040;
         }
+        
 
         void updateSystem(){
             updateCounter();

@@ -14,7 +14,7 @@ The simulator is based on a digital clock circuit designed by Wagner Rambo and p
 
 Below is an image of the original hardware project:
 
-![Original clock circuit](clockwork-board.png)
+![Original clock circuit](assets/clockwork-board.png)
 
 ---
 
@@ -22,10 +22,10 @@ Below is an image of the original hardware project:
 
 This repository serves as a personal experimental environment to:
 
-* Study digital circuit behavior through simulation
-* Explore low-level hardware concepts
-* Implement circuit logic using **C++**
-* Experiment with the simulation of discrete logic components
+- Study digital circuit behavior through simulation
+- Explore low-level hardware concepts
+- Implement circuit logic using **C++**
+- Experiment with the simulation of discrete logic components
 
 ---
 

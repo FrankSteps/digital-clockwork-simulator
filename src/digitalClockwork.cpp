@@ -3,7 +3,7 @@
 
 
 [EN-US]
-
+    
 */
 
 // LIBRARIES
@@ -11,96 +11,157 @@
 #include "chips.hpp"
 #include <iostream>
 #include <string.h>
-#include <vector>
-#include <thread>
-#include <chrono>
-#include <atomic>
-#include <mutex>
 #include <array>
 
 
 // Desktop -> ambiente de trabalho
 class DigitalClockworkFunctions{
     private:
-        Chip4029* cd4029[4];
-        Chip4511* cd4511[4];
-        Chip4081* cd4081[2];
+        std::array<Chip4029*, 4> cd4029;
+        std::array<Chip4511*, 4> cd4511;
+        std::array<Chip4081*, 2> cd4081;
+        Chip4017* cd4017;
+        Chip4040* cd4040;
+        FreqGenerator* clock;
 
-    public:
-        DigitalClockworkFunctions(Chip4029* chips4029[4], Chip4511* chips4511[4], Chip4081* chips4081[2]){
-            for(int i = 0; i < 4; i++){
-                cd4029[i] = chips4029[i];
-                cd4511[i] = chips4511[i];
-
-                if(i % 2 == 0){
-                    cd4081[i] = chips4081[i];
-                }
-            }
-        }
-
-        void update4511(){
+        void updateCounter() {
+            bool carry = false;
+        
             for(int i = 0; i < 4; i++){
                 std::array<bool, 4> intermediate;
 
                 for(int j = 0; j < 4; j++){
                     intermediate[j] = cd4029[i]->getOutput(j);
                 }
-
+            
                 cd4511[i]->setInputs(intermediate);
+            
+                cd4029[i]->setCarryIn(carry);
+                cd4029[i]->clock();
+            
+                carry = cd4029[i]->getCarryOut();
             }
+        
+            // set inputs values
+            bool inputA[3], inputB[3];
+            inputA[0] = cd4029[1]->getOutput(2);
+            inputB[0] = cd4029[1]->getOutput(3);
+        
+            inputA[1] = cd4029[2]->getOutput(1);
+            inputB[1] = cd4029[2]->getOutput(2);
+        
+            inputA[2] = cd4029[3]->getOutput(1);
+            inputB[2] = cd4081[0]->getOutput(1); // cascade
+        
+
+            // Update cd4081 
+            for(int k = 0; k < 3; k++){
+                cd4081[0]->setInputA(k, inputA[k]);
+                cd4081[0]->setInputB(k, inputB[k]);
+            }
+        
+            // Resets
+            if(cd4081[0]->getOutput(0)){
+                cd4029[1]->setPresetEnable(); 
+                cd4029[2]->setPresetEnable();
+            }
+        
+            if(cd4081[0]->getOutput(1)){
+                cd4029[2]->setPresetEnable(); 
+                cd4029[3]->setPresetEnable();
+            }
+        
+            if(cd4081[0]->getOutput(2)){
+                cd4029[3]->setPresetEnable();
+            }
+        }
+
+    public:
+        DigitalClockworkFunctions(
+            // usar arrays ao invés de ponteiros crus deixa o construtor mais seguro
+            std::array<Chip4029*, 4> chips4029,
+            std::array<Chip4511*, 4> chips4511,
+            std::array<Chip4081*, 2> chips4081,
+            Chip4017* chip4017,
+            Chip4040* chip4040,
+            FreqGenerator* clk
+        ){
+            for(int i = 0; i < 4; i++){
+                cd4029[i] = chips4029[i];
+                cd4511[i] = chips4511[i];
+            }
+
+            for(int i = 0; i < 2; i++){
+                cd4081[i] = chips4081[i];
+            }
+
+            clock = clk;
+            cd4017 = chip4017;
+            cd4040 = chip4040;
+        }
+
+        void updateSystem(){
+            updateCounter();
         }
 };
 
 
 
-
 int main(){
-    // VECTORS
-    std::vector<Chip4029> cd4029;               
-    std::vector<Chip4511> cd4511;               
-    std::vector<Chip4081> cd4081;    
-    
-
-    // POINTERS
-    Chip4029* ptr4029[4];
-    Chip4511* ptr4511[4];
-    Chip4081* ptr4081[2];
-
-    for (int i = 0; i < 4; i++) {
-        ptr4029[i] = &cd4029[i];  
-        ptr4511[i] = &cd4511[i];
-
-        if(i % 2 == 0){
-            ptr4081[i] = &cd4081[i];
-        }
-    }
-
-
     // CONSTANTS
     const std::array<bool, 4> presetZero = {0,0,0,0};
 
-
-    // CREATE OBJECTS
-    FreqGenerator clk;                     // frequency: 60 Hz       
-    Chip4017 cd4017(2, true);              // AM/PM indicator
-    Chip4040 cd4040;                       
     
-    for(int i = 0; i < 4; i++) {
-        cd4029.emplace_back(presetZero);
-        cd4511.emplace_back(); 
-        if(i % 2 == 0){
-            cd4081.emplace_back();
-        }
-    }  
+    // CREATE OBJECTS
+    std::array<Chip4029, 4> cd4029 = {
+        Chip4029(presetZero),
+        Chip4029(presetZero),
+        Chip4029(presetZero),
+        Chip4029(presetZero)
+    };
 
-    // SETTINGS
+    std::array<Chip4511, 4> cd4511{};  
+    std::array<Chip4081, 2> cd4081{};  
+
+    FreqGenerator clk;                  // frequency: 60 Hz       
+    Chip4017 cd4017(2, true);           // AM/PM indicator
+    Chip4040 cd4040; 
+
+    
+    // CREATE POINTERS ARRAYS
+    std::array<Chip4029*, 4> ptr4029;
+    std::array<Chip4511*, 4> ptr4511;
+    std::array<Chip4081*, 2> ptr4081;
+
     for(int i = 0; i < 4; i++){
-        cd4511[i].setLampTest(true);
-        cd4511[i].setBlanking(true);
-        cd4029[i].setBinaryDecade(true);
-        cd4029[i].setUpDown(false);
+        ptr4029[i] = &cd4029[i];
+        ptr4511[i] = &cd4511[i];
+    }
+
+    for(int i = 0; i < 2; i++){
+        ptr4081[i] = &cd4081[i];
     }
 
 
+    // ADD THE FUNCTIONS
+       DigitalClockworkFunctions functions(
+        ptr4029,
+        ptr4511,
+        ptr4081,
+        &cd4017,
+        &cd4040,
+        &clk   
+    );
+    
+
+    // SETTINGS 
+    for(int i = 0; i < 4; i++){
+        cd4511[i].setLampTest(true);
+        cd4511[i].setBlanking(true);
+        cd4029[i].setBinaryDecade(false);
+        cd4029[i].setUpDown(true);
+    }
+
+    // END
     return 0;
 }

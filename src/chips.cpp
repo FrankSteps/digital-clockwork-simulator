@@ -75,7 +75,7 @@ void Chip4081::setInputB(size_t index, bool value){
 }
 
 bool Chip4081::getOutput(size_t index) const{
-    if(index > 4){
+    if(index >= 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     return output_C[index];
@@ -88,7 +88,7 @@ bool Chip4081::getOutput(size_t index) const{
 */
 
 bool Chip4029::getOutput(size_t index) const{
-    if(index > 4){
+    if(index >= 4){
         throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
     }
     return outputs[index];
@@ -110,7 +110,7 @@ void Chip4029::increment(){
         value = value + 1;
     }
 
-    if (binaryDecade) {
+    if (!binaryDecade) {
         if (value > 9) {
             value = value % 10;
             carryOut = true;
@@ -147,7 +147,7 @@ void Chip4029::decrement(){
         value = value - 1;
     }
 
-    if (binaryDecade) {
+    if (!binaryDecade) {
         if (value < 0) {
             value = 10 + value; 
             carryOut = true;
@@ -180,6 +180,7 @@ void Chip4029::setCarryIn(bool value) {
 
 void Chip4029::setPresetEnable(){
     presetEnable = true;
+    carryOut = false; 
     outputs = presetInputs;
 }
 
@@ -197,18 +198,12 @@ void Chip4029::clock() {
     }
 
     if (upDown){
-        decrement();
-    }
-    else{
         increment();
     }
+    else{
+        decrement();
+    }
 }
-
-void Chip4029::reset() {
-    outputs = presetInputs; 
-    carryOut = false;       
-}
-
 
 
 /*

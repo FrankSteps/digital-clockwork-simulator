@@ -14,21 +14,17 @@ Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitRese
 }
 
 void Chip4017::shift() {
-    if (!ClockEnable) {
-        return; 
+    if (!ClockEnable){
+        return;
     }
 
-    value = 0;
-    for (size_t i = 0; i < 10; i++) {
-        if (outputs[i]) {
-            value |= (1 << i);
-        }
-    }
     value <<= 1;
 
     if (value >= (1u << LimitReset)) {
         value = 1;
     }
+
+    outputs.fill(false);
 
     for (size_t i = 0; i < 10; i++) {
         outputs[i] = (value >> i) & 1;
@@ -96,33 +92,29 @@ bool Chip4029::getOutput(size_t index) const{
 
 
 void Chip4029::increment(){
+    if (!carryIn) {
+        return;
+    }
+
     value = 0;
-
     for (size_t i = 0; i < 4; i++) {
-        if (outputs[i]) {
-            value |= (1 << i);
-        }
+        if (outputs[i]) value |= (1 << i);
     }
 
-    if (carryIn) {
-        value = value + 2;
-    } else {
-        value = value + 1;
-    }
+    value += 1;
 
     if (!binaryDecade) {
-        if (value > 9) {
-            value = value % 10;
-            carryOut = true;
-        } else {
-            carryOut = false;
+        carryOut = (value > 9);
+
+        if (carryOut) {
+            value %= 10;
         }
+
     } else {
-        if (value > 15) {
-            value = value % 16;
-            carryOut = true;
-        } else {
-            carryOut = false;
+        carryOut = (value > 15);
+
+        if (carryOut) {
+            value %= 16;
         }
     }
 
@@ -133,33 +125,28 @@ void Chip4029::increment(){
 
 
 void Chip4029::decrement(){
-    value = 0;
+    if (!carryIn){
+        return;
+    }
 
+    value = 0;
     for (size_t i = 0; i < 4; i++) {
-        if (outputs[i]) {
+        if (outputs[i]){
             value |= (1 << i);
         }
     }
 
-    if (carryIn) {
-        value = value - 2;
-    } else {
-        value = value - 1;
-    }
+    value -= 1; // sempre subtrai 1
 
     if (!binaryDecade) {
-        if (value < 0) {
-            value = 10 + value; 
-            carryOut = true;
-        } else {
-            carryOut = false;
-        }
+        carryOut = (value < 0);
+        if (carryOut){
+            value += 10;
+        } 
     } else {
-        if (value < 0) {
-            value = 16 + value; 
-            carryOut = true;
-        } else {
-            carryOut = false;
+        carryOut = (value < 0);
+        if (carryOut) {
+            value += 16;
         }
     }
 
@@ -195,12 +182,14 @@ void Chip4029::setUpDown(bool value){
 void Chip4029::clock() {
     if (presetEnable) {
         outputs = presetInputs;
+        presetEnable = false;
+        return;
     }
 
     if (upDown){
         increment();
-    }
-    else{
+    } 
+    else {
         decrement();
     }
 }

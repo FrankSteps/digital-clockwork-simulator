@@ -14,8 +14,8 @@
 #include <array>
 
 
-// Desktop -> ambiente de trabalho
-class DigitalClockworkFunctions{
+// Desktop
+class DigitalClockwork{
     private:
         std::array<Chip4029*, 4> cd4029;
         std::array<Chip4511*, 4> cd4511;
@@ -25,60 +25,71 @@ class DigitalClockworkFunctions{
         FreqGenerator* clock;
 
         void updateCounter() {
-            bool carry = false;
+            bool carryIn = true;
         
             for(int i = 0; i < 4; i++){
-                std::array<bool, 4> intermediate;
+                cd4029[i]->setCarryIn(carryIn);
+                cd4029[i]->clock();
+                carryIn = cd4029[i]->getCarryOut();
 
+                std::array<bool, 4> intermediate;
                 for(int j = 0; j < 4; j++){
                     intermediate[j] = cd4029[i]->getOutput(j);
                 }
-            
                 cd4511[i]->setInputs(intermediate);
-            
-                cd4029[i]->setCarryIn(carry);
-                cd4029[i]->clock();
-            
-                carry = cd4029[i]->getCarryOut();
             }
         
             // set inputs values
-            bool inputA[3], inputB[3];
-            inputA[0] = cd4029[1]->getOutput(2);
-            inputB[0] = cd4029[1]->getOutput(3);
-        
-            inputA[1] = cd4029[2]->getOutput(1);
-            inputB[1] = cd4029[2]->getOutput(2);
-        
-            inputA[2] = cd4029[3]->getOutput(1);
-            inputB[2] = cd4081[0]->getOutput(1); // cascade
+            std::array<bool, 4> inputA{}, inputB{};
+
+            inputA[0] = cd4029[1]->getOutput(1);
+            inputB[0] = cd4029[1]->getOutput(2);
+
+            inputA[1] = cd4029[2]->getOutput(0);
+            inputB[1] = cd4029[2]->getOutput(1);
+
+            inputA[2] = cd4029[3]->getOutput(0);
+            inputB[2] = cd4081[0]->getOutput(1);
+
+
+            /*
+                To AM-PM logic
+                when exist a counter overflow in both cd4029 counters a clock is applied in cd4017 (Johnson counter)
+            */
+            inputA[3] = cd4029[2]->getOutput(1);
+            inputB[3] = cd4029[3]->getOutput(0);
         
 
             // Update cd4081 
-            for(int k = 0; k < 3; k++){
+            for(int k = 0; k < 4; k++){
                 cd4081[0]->setInputA(k, inputA[k]);
                 cd4081[0]->setInputB(k, inputB[k]);
             }
-        
+    
+
             // Resets
             if(cd4081[0]->getOutput(0)){
-                cd4029[1]->setPresetEnable(); 
-                cd4029[2]->setPresetEnable();
+                cd4029[0]->setPresetEnable(); 
+                cd4029[1]->setPresetEnable();
             }
         
             if(cd4081[0]->getOutput(1)){
-                cd4029[2]->setPresetEnable(); 
-                cd4029[3]->setPresetEnable();
+                cd4029[2]->setPresetEnable();
             }
         
             if(cd4081[0]->getOutput(2)){
                 cd4029[3]->setPresetEnable();
+                cd4029[2]->clock();
+            }
+
+            if(cd4081[0]->getOutput(3)){
+                cd4017->shift();
             }
         }
 
     public:
-        DigitalClockworkFunctions(
-            // usar arrays ao invés de ponteiros crus deixa o construtor mais seguro
+        DigitalClockwork(
+            // Use arrays instead of pointers makes the constructor feel safe 
             std::array<Chip4029*, 4> chips4029,
             std::array<Chip4511*, 4> chips4511,
             std::array<Chip4081*, 2> chips4081,
@@ -124,8 +135,8 @@ int main(){
     std::array<Chip4511, 4> cd4511{};  
     std::array<Chip4081, 2> cd4081{};  
 
-    FreqGenerator clk;                  // frequency: 60 Hz       
-    Chip4017 cd4017(2, true);           // AM/PM indicator
+    FreqGenerator clk;            // frequency: 60 Hz       
+    Chip4017 cd4017(2, true);     // AM/PM indicator
     Chip4040 cd4040; 
 
     
@@ -144,8 +155,8 @@ int main(){
     }
 
 
-    // ADD THE FUNCTIONS
-       DigitalClockworkFunctions functions(
+    // ADD THE FUNCTIONS IN THE DIGITAL CLOCKWORK FUNCTIONS CLASS
+       DigitalClockwork functions(
         ptr4029,
         ptr4511,
         ptr4081,

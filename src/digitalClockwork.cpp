@@ -78,14 +78,16 @@ class DigitalClockwork{
             }
         
             if(cd4081[0]->getOutput(2)){
+                cd4029[2]->setPresetEnable();
                 cd4029[3]->setPresetEnable();
-                cd4029[2]->clock();
             }
 
             if(cd4081[0]->getOutput(3)){
                 cd4017->shift();
             }
         }
+
+
 
     public:
         DigitalClockwork(
@@ -155,7 +157,7 @@ int main(){
     }
 
 
-    // ADD THE FUNCTIONS IN THE DIGITAL CLOCKWORK FUNCTIONS CLASS
+    // ADD THE CIs IN THE DIGITAL CLOCKWORK FUNCTIONS CLASS
        DigitalClockwork functions(
         ptr4029,
         ptr4511,

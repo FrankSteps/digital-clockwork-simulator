@@ -1,38 +1,42 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
 
-SRC = src/chips.cpp src/freqGenerator.cpp
+SRC = src/chips.cpp src/freqGenerator.cpp src/feedback.cpp
 BUILD = builds
 
-TESTS = 4511 4029 4040 4017 frequency
+TEST_NAMES = 4511 4029 4040 4017 frequency
+TEST_BINS = $(addprefix $(BUILD)/, $(addsuffix test, $(TEST_NAMES)))
 
-.PHONY: all tests clean $(addprefix testChip,$(TESTS)) runClock
+CLOCK_SRC = src/digitalClockwork.cpp
+CLOCK_BIN = $(BUILD)/digitalClock
+
+
+.PHONY: all tests clean runClock
 
 all: tests
-
-tests: $(addprefix testChip,$(TESTS))
 
 $(BUILD):
 	mkdir -p $(BUILD)
 
-testChip4511:
-	$(CXX) $(CXXFLAGS) tests/4511test.cpp $(SRC) -o $(BUILD)/4511test
 
-testChip4029:
-	$(CXX) $(CXXFLAGS) tests/4029test.cpp $(SRC) -o $(BUILD)/4029test
+# TESTS
+tests: $(BUILD) $(TEST_BINS)
 
-testChip4040:
-	$(CXX) $(CXXFLAGS) tests/4040test.cpp $(SRC) -o $(BUILD)/4040test
-
-testChip4017:
-	$(CXX) $(CXXFLAGS) tests/4017test.cpp $(SRC) -o $(BUILD)/4017test
-
-testChipfrequency:
-	$(CXX) $(CXXFLAGS) tests/freq-test.cpp $(SRC) -o $(BUILD)/freqtest
+# Regra genérica para todos os testes
+$(BUILD)/%test: tests/%test.cpp $(SRC)
+	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@
 
 
-runClock:
-	$(CXX) $(CXXFLAGS) src/digitalClock.cpp $(SRC) -o $(BUILD)/digitalClock
 
+# CLOCKWORK
+runClock: $(BUILD) $(CLOCK_BIN)
+	./$(CLOCK_BIN)
+
+
+$(CLOCK_BIN): $(CLOCK_SRC) $(SRC)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+
+# CLEAR
 clean:
-	rm -rf $(BUILD)/*
+	rm -rf $(BUILD)

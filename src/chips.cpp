@@ -3,12 +3,12 @@
 
 
 /*
-    Métodos da classe Chip4017
+    Chip4017
 */
 
 Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitReset), ClockEnable(clockEnable) {
     if (LimitReset < 1 || LimitReset > 10) {
-        throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 1 to 10.");
     }
     reset();
 }
@@ -45,7 +45,7 @@ unsigned Chip4017::getLimitReset() const {
 
 
 /*
-    Métodos da classe Chip4081
+    Chip4081
 */
 
 void Chip4081::updateOutputs(){
@@ -80,7 +80,7 @@ bool Chip4081::getOutput(size_t index) const{
 
 
 /*
-    Métodos da classe Chip4029
+    Chip4029
 */
 
 bool Chip4029::getOutput(size_t index) const{
@@ -93,6 +93,7 @@ bool Chip4029::getOutput(size_t index) const{
 
 void Chip4029::increment(){
     if (!carryIn) {
+        carryOut = false;
         return;
     }
 
@@ -126,6 +127,7 @@ void Chip4029::increment(){
 
 void Chip4029::decrement(){
     if (!carryIn){
+        carryOut = false;
         return;
     }
 
@@ -136,7 +138,7 @@ void Chip4029::decrement(){
         }
     }
 
-    value -= 1; // sempre subtrai 1
+    value -= 1;
 
     if (!binaryDecade) {
         carryOut = (value < 0);
@@ -183,6 +185,9 @@ void Chip4029::clock() {
     if (presetEnable) {
         outputs = presetInputs;
         presetEnable = false;
+    }
+
+    if (!carryIn) {
         return;
     }
 
@@ -196,7 +201,7 @@ void Chip4029::clock() {
 
 
 /*
-    Métodos da classe Chip4511
+    Chip4511
 */
 
 void Chip4511::setLampTest(bool value){
@@ -281,7 +286,7 @@ bool Chip4511::getSegmentsOut(size_t index) const {
 
 
 /*
-    Métodos da classe Chip4040
+    Chip4040
 */
 
 void Chip4040::reset(){

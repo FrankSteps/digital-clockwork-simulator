@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 
-
+// Johnson counter chip class
 class Chip4017 {
     private:
         std::array <bool, 10> outputs{0,0,0,0,0,0,0,0,0,0};
@@ -17,7 +17,7 @@ class Chip4017 {
         unsigned int value = 0;  
 
     public:
-        explicit Chip4017(unsigned limitReset, bool clockEnable);
+        explicit Chip4017(unsigned limitReset = 10, bool clockEnable);
 
         void shift();
         void reset();
@@ -27,7 +27,7 @@ class Chip4017 {
 };
 
 
-
+// AND gates chip class
 class Chip4081 {
     protected:
         std::array<bool, 4> input_A  = {0,0,0,0};
@@ -45,7 +45,7 @@ class Chip4081 {
 };
 
 
-
+// BCD counters chip class
 class Chip4029 {
     private:
         std::array<bool,4> presetInputs{0,0,0,0};
@@ -85,7 +85,7 @@ class Chip4029 {
 };
 
 
-
+// seven-segment decoder chip class
 class Chip4511{
     private:
         std::array<bool, 7> segmentsOut{0,0,0,0,0,0,0};
@@ -109,7 +109,7 @@ class Chip4511{
 };
 
 
-
+// ripple counter chip class
 class Chip4040{
     private:
         std::array<bool, 12> outputs = {0,0,0,0,0,0,0,0,0,0,0,0};

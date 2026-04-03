@@ -1,7 +1,22 @@
+/*
+[PT-BR]
+    Teste de dois CIs CD4029 em cascata. Cada vez que a tecla ENTER é pressionada, um pulso de clock é aplicado ao 
+    primeiro chip. Se o primeiro chip gerar um Carry Out, o segundo chip recebe um pulso de clock, simulando a 
+    contagem em cascata. O estado atual de cada chip e seu Carry Out são exibidos no terminal.
+
+[EN-US]
+    Test for two CD4029 ICs in cascade. Each time the ENTER key is pressed, a clock pulse is applied to the first 
+    chip. If the first chip generates a Carry Out, the second chip receives a clock pulse, simulating cascade counting.
+    The current state of each chip and its Carry Out are displayed in the terminal.
+*/
+
+// libraries
 #include "chips.hpp"
 #include <iostream>
-#include <cstdlib>  // system("clear")
+#include <cstdlib>
 
+
+// displays the current output state of the CD4029
 void printChip(const Chip4029& chip, const std::string& name) {
     std::cout << name << ": ";
     for (int i = 3; i >= 0; i--) {
@@ -20,6 +35,7 @@ int main() {
     chip1.setUpDown(false);       // up
     chip2.setUpDown(false);       // up
 
+    // main loop
     while (true) {
         // clear the terminal
         system("clear");
@@ -33,12 +49,13 @@ int main() {
         printChip(chip1, "Chip1");
         printChip(chip2, "Chip2");
 
-        std::cout << "\nPressione ENTER para gerar próximo pulso de clock...";
+        std::cout << "\nPress 'ENTER' to generate the next clock pulse";
         std::cin.get();  // wait for enter
 
         // Trigger clock on the first chip
         chip1.clock();
     }
 
+    // finished
     return 0;
 }

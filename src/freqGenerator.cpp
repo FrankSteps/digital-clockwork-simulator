@@ -1,16 +1,22 @@
-#include <iostream>
-#include <string.h>
 #include <chrono>
 #include <thread>
-#include <atomic>
 #include <mutex>
-#include <condition_variable>
 #include "freqGenerator.hpp"
 
-
+/*
+    Using sleep_until anchors execution to absolute time points. Even if a cycle is delayed, the next iteration 
+    compensates, reducing cumulative timing drift
+*/
 void FreqGenerator::run(){
+    std::chrono::steady_clock::time_point next = std::chrono::steady_clock::now();
+
+    std::chrono::steady_clock::duration half = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+        std::chrono::duration<double, std::milli>(period_ms / 2)
+    );
+
     while(running){
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(period_ms/2)));
+        next += half;
+        std::this_thread::sleep_until(next);
         {
             std::lock_guard<std::mutex> lock(mtx);
             state = !state;
@@ -19,6 +25,7 @@ void FreqGenerator::run(){
     }
 }
 
+// waits until the signal changes state (edge detection)
 void FreqGenerator::waitEdge(bool prevState){
     std::unique_lock<std::mutex> lock(mtx);
     condv.wait(lock, [&]{
@@ -26,11 +33,17 @@ void FreqGenerator::waitEdge(bool prevState){
     });
 }
 
+
+// starts the frequency generator thread
 void FreqGenerator::start(){
     running = true;
-    clkThread = std::thread(&FreqGenerator::run, this);
+    clkThread = std::thread([this]() {
+        run();
+    });
 }
 
+
+// stops the generator thread and waits for it to finish.
 void FreqGenerator::stop(){
     running = false;
     if(clkThread.joinable()){
@@ -38,6 +51,7 @@ void FreqGenerator::stop(){
     }
 }
 
+// returns the current signal state (thread-safe)
 bool FreqGenerator::getState() const{
     std::lock_guard<std::mutex> lock(mtx);
     return state.load();

@@ -70,6 +70,9 @@ class DigitalClockwork{
         bool lastOut4081 = false; 
         bool meridienEdge = false;
 
+        // contador para a gambiarra
+        int defaultCooldown = 0;
+
 
         // Simulates the ripple carry between the minute counters
         void cascadeCount() {
@@ -175,12 +178,9 @@ class DigitalClockwork{
         }
 
 
-        /*
-            Acquires the clock signal from cd4040 and divides its frequency
-            to control the counting speed of the clock
-        */
-        void frequencyConverter(ADJUSTMENT MODE) {
-            std::array<bool, 3> inputA{}, inputB{};
+        // Updates all four AND gates of cd4081[1].
+        void updateAND_1() {
+            std::array<bool, 3> inputA{}, inputB{}; 
 
             inputA[0] = cd4040->getOutput(4); 
             inputB[0] = cd4040->getOutput(11);
@@ -191,43 +191,59 @@ class DigitalClockwork{
             inputA[2] = cd4081[1]->getOutput(0);
             inputB[2] = cd4081[1]->getOutput(1);
 
-            // set inputs values in cd4081
+
             for(int l = 0; l < 3; l++){
                 cd4081[1]->setInputA(l, inputA[l]);
                 cd4081[1]->setInputB(l, inputB[l]);
             }
+        }
 
+
+        /*
+            Acquires the clock signal from cd4040 and divides its frequency
+            to control the counting speed of the clock
+        */
+        void frequencyConverter(ADJUSTMENT MODE) {
+        
             // read divided clock signals
             bool Q0 = cd4040->getOutput(0);
             bool Q5 = cd4040->getOutput(5);
-            bool Out4081 = cd4081[1]->getOutput(3);
 
-
-            // trigger counter update on rising edge of the selected clock signal
+            updateAND_1();
+            bool Out4081 = cd4081[1]->getOutput(2);
+        
             switch(MODE){
-                // uses cd4040 Q0 output 
                 case ADJUSTMENT::FAST:
                     if(Q0 && !lastQ0){
                         updateCounter();
                     }
                     break;
-
-                // uses cd4040 Q5 output
+                
                 case ADJUSTMENT::SLOW:
                     if(Q5 && !lastQ5){
                         updateCounter();
                     }
                     break;
-
-                // uses AND-gated cd4040 outputs
+                
+                /*
+                    Isso aqui foi uma gambiarra temporária. 
+                    Planejo desenvolver algum artifício que elimine o ruido da saída da AND gate no cd4081[1] (funcionando como um capacitor, por exemplo).
+                    
+                    Por enquanto, adotei a medida "software-like"
+                */
                 case ADJUSTMENT::DEFAULT:
-                    if(Out4081 && !lastOut4081){
+                    if(Out4081 && !lastOut4081 && defaultCooldown == 0){
                         updateCounter();
+                        defaultCooldown = 500;
                     }
-                    break;
-            } 
 
-            // store current state for next edge detection
+                    if(defaultCooldown > 0){
+                        defaultCooldown--;
+                    }
+    
+                    lastOut4081 = Out4081;
+                    break;
+            }
             lastQ0 = Q0;
             lastQ5 = Q5;
             lastOut4081 = Out4081;
@@ -356,7 +372,7 @@ int main(){
 
         if(!lastState && curState){
             system("clear");
-            functions.updateSystem(DigitalClockwork::ADJUSTMENT::FAST);  // <- Select clock speed mode (FAST, SLOW, DEFAULT) here
+            functions.updateSystem(DigitalClockwork::ADJUSTMENT::DEFAULT);  // <- Select clock speed mode (FAST, SLOW, DEFAULT) here
 
             std::array<std::array<bool, 7>, 4> segments = functions.getSegmentsOutput();
 

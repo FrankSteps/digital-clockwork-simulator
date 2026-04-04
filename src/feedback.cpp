@@ -1,5 +1,4 @@
 #include "feedback.hpp"
-
 #include <iostream>
 
 /*
@@ -51,10 +50,10 @@ void Led::setState(bool value){
 }
 
 // Returns a character representing the LED state
-char Led::getState(){
+std::string Led::getState(){
     if(state){
-        return '◉';
+        return "◉";
     }
 
-    return '◎';
+    return "◎";
 }

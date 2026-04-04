@@ -1,7 +1,3 @@
-/*
-
-*/
-
 #ifndef DISPLAY_HPP
 #define DISPLAY_HPP
 
@@ -29,7 +25,7 @@ class Led{
         Led() = default;
 
         void setState(bool value);
-        char getState();
+        std::string getState();
 };
 
 

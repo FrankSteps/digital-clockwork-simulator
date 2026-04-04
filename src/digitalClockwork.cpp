@@ -68,6 +68,7 @@ class DigitalClockwork{
         bool lastQ0 = false;       
         bool lastQ5 = false;           
         bool lastOut4081 = false; 
+        bool meridienEdge = false;
 
 
         // Simulates the ripple carry between the minute counters
@@ -135,9 +136,12 @@ class DigitalClockwork{
                 To AM-PM logic
                 when exist a counter overflow in both cd4029 counters a clock is applied in cd4017 (Johnson counter)
             */
-            if(cd4081[0]->getOutput(3)){
+            bool currentOutput3 = cd4081[0]->getOutput(3);
+
+            if(currentOutput3 && !meridienEdge){
                 cd4017->shift();
             }
+            meridienEdge = currentOutput3;
         }
 
         // updating the seven-segment display state
@@ -270,6 +274,10 @@ class DigitalClockwork{
             }
             return table;
         }
+
+        bool getMeridien(size_t value){
+            return cd4017->getOutput(value);
+        }
 };
 
 
@@ -288,7 +296,7 @@ int main(){
         Chip4029(presetZero)
     };
 
-    std::array<Chip4511, 4> cd4511{};  
+    std::array<Chip4511, 4> cd4511{};
     std::array<Chip4081, 2> cd4081{};  
                                                         
     FreqGenerator clk;                                  // frequency: 60 Hz       
@@ -325,7 +333,7 @@ int main(){
         &cd4017,
         &cd4040  
     );
-    
+
 
     // configure all counters and decoders             
     for(int i = 0; i < 4; i++){
@@ -351,9 +359,13 @@ int main(){
             functions.updateSystem(DigitalClockwork::ADJUSTMENT::FAST);  // <- Select clock speed mode (FAST, SLOW, DEFAULT) here
 
             std::array<std::array<bool, 7>, 4> segments = functions.getSegmentsOutput();
-            std::cout << display.render(segments) << std::endl;
-        }
 
+            AM.setState(functions.getMeridien(0));
+            PM.setState(functions.getMeridien(1));
+
+            std::cout << display.render(segments) << " | "; 
+            std::cout << "AM:" << AM.getState() << "  PM:" << PM.getState() << " |\n";        
+        }
         lastState = curState;
     }
 

@@ -17,7 +17,7 @@ class Chip4017 {
         unsigned int value = 0;  
 
     public:
-        explicit Chip4017(unsigned limitReset = 10, bool clockEnable);
+        explicit Chip4017(unsigned limitReset = 10, bool clockEnable = false);
 
         void shift();
         void reset();

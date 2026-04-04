@@ -10,6 +10,7 @@ Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitRese
     if (LimitReset < 1 || LimitReset > 10) {
         throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 1 to 10.");
     }
+    value = 1;
     reset();
 }
 

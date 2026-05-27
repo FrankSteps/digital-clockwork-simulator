@@ -1,16 +1,16 @@
 # A Digital Clockwork
 
-**A Digital Clockwork** is a digital clock circuit simulator inspired by a project by Wagner Rambo, presented on his YouTube channel **WR Kits**.
+viddy well, little brother!
+
+**A Digital Clockwork** is a digital clock circuit simulator inspired by a project created by Wagner Rambo and presented on his YouTube channel, **WR Kits**.
 
 This simulator was developed as a way to study digital circuit behavior, low-level hardware concepts, discrete logic, and the internal operation of integrated circuits such as **CD4017**, **CD4029**, **CD4511**, and others used in the original design.
-
-During my university vacation, this repository serves as a personal experimental laboratory to explore hardware concepts, C++ programming, and digital circuit simulation.
 
 ---
 
 ## The Original Project
 
-This simulator is based on a digital clock circuit designed by Wagner Rambo and presented on his YouTube channel **WR Kits**.
+This horrorshow is based on a digital clock circuit designed by Wagner Rambo and showcased on his YouTube channel: **WR Kits**.
 
 Below is an image of the original hardware project:
 
@@ -20,12 +20,12 @@ Below is an image of the original hardware project:
 
 ## Purpose of This Repository
 
-This repository serves as a personal experimental environment to:
+This repository serves as a personal experimental environment for:
 
-* Study digital circuit behavior through simulation
-* Explore low-level hardware concepts
-* Implement circuit logic using **C++**
-* Experiment with the simulation of discrete logic components
+* Studying digital circuit behavior through simulation
+* Exploring low-level hardware concepts
+* Implementing circuit logic in **C++**
+* Experimenting with the simulation of discrete logic components
 
 ---
 
@@ -33,17 +33,20 @@ This repository serves as a personal experimental environment to:
 
 To compile and run the Digital Clockwork simulator:
 
-```
+```bash
+git clone https://github.com/FrankSteps/digital-clockwork-simulator
+
+cd digital-clockwork-simulator
+
 make runClock
 ```
-
 ---
 
 ## Important Note
 
-This project is **not intended to function as a real digital clock**.
+This project is **not intended to function as a real digital clock**, droog.
 
-Its purpose is to validate and explore the behavior of the original hardware design by Wagner Rambo through computational simulation. The focus is on reproducing the logical behavior of the circuit rather than achieving real-time accuracy.
+Its purpose is to validate and explore the behavior of Wagner Rambo's original hardware design through computational simulation. The focus is on reproducing the logical behavior of the circuit rather than achieving precise real-time accuracy.
 
 ---
 
@@ -52,3 +55,11 @@ Its purpose is to validate and explore the behavior of the original hardware des
 This project is distributed under the **GNU General Public License (GPL)**.
 
 See the `LICENSE` file for more details.
+
+---
+
+## Fun Facts
+
+> This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
+
+> Building this little horrorshow was almost as pleasurable as the good old in-output, in-output.

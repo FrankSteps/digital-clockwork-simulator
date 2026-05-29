@@ -29,6 +29,37 @@ This repository serves as a personal experimental environment for:
 
 ---
 
+## Project Structure
+
+```bash
+digital-clockwork-simulator
+├── assets                           # Images and graphical resources
+│   ├── clockwork-board.png
+│   ├── counter.png
+│   └── dividefreq.png
+├── include                          # Header files
+│   ├── chips.hpp 
+│   ├── feedback.hpp
+│   └── freqGenerator.hpp
+├── src                              # Source code files
+│   ├── chips.cpp
+│   ├── digitalClockwork.cpp
+│   ├── feedback.cpp
+│   └── freqGenerator.cpp
+├── tests                            # Unit tests
+│   ├── 4017test.cpp 
+│   ├── 4029test.cpp 
+│   ├── 4040test.cpp
+│   ├── 4511test.cpp
+│   └── frequencytest.cpp
+├── .gitignore                       # Git ignored files configuration
+├── LICENSE                          # Project license
+├── Makefile                         # Build automation file
+└── README.md                        # Project documentation
+```
+
+---
+
 ## Build and Run
 
 To compile and run the Digital Clockwork simulator:

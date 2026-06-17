@@ -186,6 +186,7 @@ void Chip4029::clock() {
     if (presetEnable) {
         outputs = presetInputs;
         presetEnable = false;
+        return;
     }
 
     if (!carryIn) {

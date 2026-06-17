@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 
+
 // Seven-segments display
 class Display{
     private:

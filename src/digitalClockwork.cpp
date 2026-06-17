@@ -270,6 +270,8 @@ class DigitalClockwork{
 
             cd4017 = chip4017;
             cd4040 = chip4040;
+
+            updateDisplays();
         }
 
         // Advances the system clock and updates the circuit based on the selected mode
@@ -308,7 +310,7 @@ int main(){
     std::array<Chip4029, 4> cd4029 = {
         Chip4029(presetZero),
         Chip4029(presetZero),
-        Chip4029(presetZero),
+        Chip4029({1,0,0,0}),
         Chip4029(presetZero)
     };
 
@@ -342,7 +344,7 @@ int main(){
 
 
     // instantiate the main clockwork controller
-       DigitalClockwork functions(
+    DigitalClockwork functions(
         ptr4029,
         ptr4511,
         ptr4081,

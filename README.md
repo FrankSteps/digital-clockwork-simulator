@@ -1,6 +1,7 @@
 # A Digital Clockwork
 
-viddy well, little brother!
+Viddy well, little brother. This project is queer, queer like a clockwork orange!
+
 
 **A Digital Clockwork** is a digital clock circuit simulator inspired by a project created by Wagner Rambo and presented on his YouTube channel, **WR Kits**.
 
@@ -15,6 +16,12 @@ This horrorshow is based on a digital clock circuit designed by Wagner Rambo and
 Below is an image of the original hardware project:
 
 ![Original clock circuit](assets/clockwork-board.png)
+
+---
+
+## Extension
+
+
 
 ---
 
@@ -37,6 +44,9 @@ digital-clockwork-simulator
 │   ├── clockwork-board.png
 │   ├── counter.png
 │   └── dividefreq.png
+├── docs                             # code and project documentation
+│   ├── documentation.pdf
+│   └── documentation.tex
 ├── include                          # Header files
 │   ├── chips.hpp 
 │   ├── feedback.hpp

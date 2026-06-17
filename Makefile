@@ -22,6 +22,7 @@ $(BUILD):
 # TESTS
 tests: $(BUILD) $(TEST_BINS)
 
+
 # Regra genérica para todos os testes
 $(BUILD)/%test: tests/%test.cpp $(SRC)
 	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@
@@ -31,6 +32,7 @@ $(BUILD)/%test: tests/%test.cpp $(SRC)
 # CLOCKWORK
 runClock: $(BUILD) $(CLOCK_BIN)
 	./$(CLOCK_BIN)
+
 
 
 $(CLOCK_BIN): $(CLOCK_SRC) $(SRC)

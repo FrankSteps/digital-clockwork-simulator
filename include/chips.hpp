@@ -72,6 +72,7 @@ class Chip4029 {
                 throw std::invalid_argument("presetInputs requires 4 valid boolean values");
             }
             this->presetInputs = presetInputs;
+            this->outputs = presetInputs;
         }
 
         void setPresetEnable();

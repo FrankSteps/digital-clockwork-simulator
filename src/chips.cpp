@@ -190,6 +190,7 @@ void Chip4029::clock() {
     }
 
     if (!carryIn) {
+        carryOut = false;
         return;
     }
 

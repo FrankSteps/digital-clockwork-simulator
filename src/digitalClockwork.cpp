@@ -37,13 +37,19 @@
 */
 
 // Libraries
-#include "freqGenerator.hpp"
-#include "feedback.hpp"
-#include "chips.hpp"
-#include <iostream>
-#include <cstdlib>
-#include <string>
-#include <array>
+
+#include "chips.hpp"                                    // CD4029, CD4511, CD4081, CD4017, CD4040...
+#include "feedback.hpp"                                 // Display, Led...
+#include "freqGenerator.hpp"                            // Frequency generator
+
+#include <iostream>                                     // std::cout, std::cerr
+#include <cstdlib>                                      // system()
+#include <string>                                       // std::string
+#include <array>                                        // std::array
+
+#include <libevdev/libevdev.h>                          // keyboard input events
+#include <fcntl.h>                                      // open(), O_RDONLY, O_NONBLOCK
+#include <unistd.h>                                     // close()
 
 
 
@@ -83,7 +89,7 @@ class DigitalClockwork{
             if(cd4029[0]->getCarryOut()){
                 cd4029[1]->setCarryIn(true);
                 cd4029[1]->clock();
-            }
+            } 
         }
 
 
@@ -113,6 +119,7 @@ class DigitalClockwork{
         void applyResets() {
             if(cd4081[0]->getOutput(0)){
                 cd4029[1]->setPresetEnable();
+                cd4029[1]->clock();
                 cd4029[2]->setCarryIn(true);
                 cd4029[2]->clock();
 
@@ -170,6 +177,7 @@ class DigitalClockwork{
             if(cd4081[0]->getOutput(2)){
                 cd4029[2]->setPresetEnable();
                 cd4029[3]->setPresetEnable();
+                cd4029[3]->clock();
                 cd4029[2]->setCarryIn(true);
                 cd4029[2]->clock();
             }
@@ -302,6 +310,20 @@ class DigitalClockwork{
 
 
 int main(){
+    // open keyboard device
+    int fd = open("/dev/input/event4", O_RDONLY | O_NONBLOCK);
+
+    if(fd < 0){
+        std::cerr << "The file couldn't open\n";
+        return EXIT_FAILURE;
+    }
+
+    // initialize libevdev device from file descriptor
+    struct libevdev* dev = nullptr;
+    libevdev_new_from_fd(fd, &dev);
+
+
+
     // initial preset value for all BCD counters
     const std::array<bool, 4> presetZero = {0,0,0,0};
 
@@ -366,15 +388,43 @@ int main(){
     clk.start();
     bool lastState = clk.getState();
 
+    DigitalClockwork::ADJUSTMENT mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
 
     // updates the clock on each rising edge of the frequency generator
     while(true) {
+        // read keyboard input
+        struct input_event ev;
+
+        if(libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev) == 0){
+            if(ev.type == EV_KEY){
+                // key pressed
+                if(ev.value == 1){
+                    if(ev.code == KEY_F){
+                        mode = DigitalClockwork::ADJUSTMENT::FAST;
+                    }
+
+                    if(ev.code == KEY_S){
+                        mode = DigitalClockwork::ADJUSTMENT::SLOW;
+                    }
+                }
+
+                // key released
+                if(ev.value == 0){
+                    if(ev.code == KEY_F || ev.code == KEY_S){
+                        mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
+                    }
+                }
+            }
+        }
+
+        
+        // wait for rising edge and update the circuit
         clk.waitEdge(lastState);
         bool curState = clk.getState();
 
         if(!lastState && curState){
             system("clear");
-            functions.updateSystem(DigitalClockwork::ADJUSTMENT::DEFAULT);  // <- Select clock speed mode (FAST, SLOW, DEFAULT) here
+            functions.updateSystem(mode);
 
             std::array<std::array<bool, 7>, 4> segments = functions.getSegmentsOutput();
 
@@ -384,11 +434,16 @@ int main(){
             std::cout << display.render(segments) << " | "; 
             std::cout << "AM:" << AM.getState() << "  PM:" << PM.getState() << " |\n";        
         }
+        
         lastState = curState;
     }
 
 
-    // stop the frequency generator and finish this program
+    // stop the frequency generator, the keyboard reader and finish this program
     clk.stop();
-    return 0;
+
+    libevdev_free(dev);
+    close(fd);
+
+    return EXIT_SUCCESS;
 }

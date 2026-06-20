@@ -21,7 +21,7 @@ Below is an image of the original hardware project:
 
 ## Extension
 
-
+As a final assignment for the Digital Systems course, offered by the Computer Department at Universidade Federal de Sergipe (UFS) and taught by Prof. Dr. Calebe Micael de Oliveira Conceição and Prof. Rodolfo Botto de Barros Garcia, we were challenged to extend the Digital Clockwork with a fully functional alarm system.
 
 ---
 
@@ -44,22 +44,37 @@ digital-clockwork-simulator
 │   ├── clockwork-board.png
 │   ├── counter.png
 │   └── dividefreq.png
+├── builds                           #
+│   ├── 4013test 
+│   ├── 4017test 
+│   ├── 4029test 
+│   ├── 4040test
+│   ├── 4063test
+│   ├── 4511test
+│   ├── digitalClock
+│   └── frequencytest
 ├── docs                             # code and project documentation
 │   ├── documentation.pdf
 │   └── documentation.tex
 ├── include                          # Header files
-│   ├── chips.hpp 
-│   ├── feedback.hpp
-│   └── freqGenerator.hpp
+│   ├── chips.hpp
+│   ├── digitalAlarm.hpp
+│   ├── digitalClockwork.hpp
+│   ├── feedback.hpp
+│   └── freqGenerator.hpp
 ├── src                              # Source code files
-│   ├── chips.cpp
-│   ├── digitalClockwork.cpp
-│   ├── feedback.cpp
-│   └── freqGenerator.cpp
+│   ├── chips.cpp
+│   ├── digitalAlarm.cpp
+│   ├── digitalClockwork.cpp
+│   ├── feedback.cpp
+│   ├── freqGenerator.cpp
+│   └── main.cpp
 ├── tests                            # Unit tests
+│   ├── 4013test.cpp 
 │   ├── 4017test.cpp 
 │   ├── 4029test.cpp 
 │   ├── 4040test.cpp
+│   ├── 4063test.cpp
 │   ├── 4511test.cpp
 │   └── frequencytest.cpp
 ├── .gitignore                       # Git ignored files configuration

@@ -20,6 +20,9 @@
     declared in *freqGenerator.hpp* and implemented in *freqGenerator.cpp*. The files *feedback.hpp* and *feedback.cpp* were used, 
     respectively, for the declaration and implementation of the mechanisms responsible for providing visual feedback to the user in 
     the terminal.
+
+[LINUX]
+    This main.cpp is only for Linux users
 */
 
 //libraries
@@ -122,6 +125,10 @@ int main(){
 
     DigitalClockwork::ADJUSTMENT mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
 
+    // terminal config
+    system("clear");
+    system("stty -echo");
+
     // updates the clock on each rising edge of the frequency generator
     while(true) {
         // read keyboard input
@@ -155,7 +162,7 @@ int main(){
         bool curState = clk.getState();
 
         if(!lastState && curState){
-            system("clear");
+            std::cout << "\033[H";
             functions.updateSystem(mode);
 
             std::array<std::array<bool, 7>, 4> segments = functions.getSegmentsOutput();
@@ -176,6 +183,9 @@ int main(){
 
     libevdev_free(dev);
     close(fd);
+
+    // echo enable
+    system("stty echo");
 
     return EXIT_SUCCESS;
 }

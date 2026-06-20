@@ -3,6 +3,7 @@
     Teste individual do chip CD4063. Este programa compara dois números de 4 bits (A e B) e exibe
     os resultados das saídas A>B, A=B e A<B. Os valores de A e B podem ser alterados manualmente
     pressionando 'ENTER' para avançar pelos casos de teste.
+    
 [EN-US]
     Individual test for the CD4063 chip. This program compares two 4-bit numbers (A and B) and displays
     the results of the outputs A>B, A=B and A<B. The values of A and B can be changed manually
@@ -16,7 +17,7 @@
 
 // displays the current state of the CD4063
 void printChip(const Chip4063& chip, const std::string& name) {
-    std::cout << name << ":  A>B: " << chip.getOutputGreater()
+    std::cout << name << ": A>B: " << chip.getOutputGreater()
                       << "  A=B: " << chip.getOutputEqual()
                       << "  A<B: " << chip.getOutputSmaller() << std::endl;
 }

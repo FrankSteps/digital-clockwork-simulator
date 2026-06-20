@@ -123,7 +123,7 @@ class Chip4040{
         void reset();
         void clock();
 
-        bool getOutput(size_t value) const;
+        bool getOutput(size_t index) const;
 };
 
 
@@ -159,6 +159,29 @@ class Chip4063 {
         bool getOutputEqual() const;
         bool getOutputGreater() const;
         bool getOutputSmaller() const;
+};
+
+
+// Flip-Flops D
+class Chip4013 {
+    private:
+        std::array<bool, 2> output;     // Q
+        std::array<bool, 2> negOutput;  // ~Q
+        std::array<bool, 2> data;       // D
+
+        void updateOutputs(size_t flipflop);
+
+    public:
+        explicit Chip4013();
+
+        void setData(size_t flipflop, bool value);
+        void set(size_t flipflop);
+
+        void reset(size_t flipflop);
+        void clock(size_t flipflop);
+
+        bool getOutput(size_t index) const;
+        bool getNegOutput(size_t index) const;
 };
 
 #endif

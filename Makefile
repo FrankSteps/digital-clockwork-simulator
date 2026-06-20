@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
 SRC = src/chips.cpp src/freqGenerator.cpp src/feedback.cpp
 BUILD = builds
 
-TEST_NAMES = 4511 4029 4040 4017 4063 frequency
+TEST_NAMES = 4511 4029 4040 4017 4063 4013 frequency
 TEST_BINS = $(addprefix $(BUILD)/, $(addsuffix test, $(TEST_NAMES)))
 
 CLOCK_SRC = src/digitalClockwork.cpp

@@ -57,7 +57,7 @@ void Chip4081::updateOutputs(){
 
 void Chip4081::setInputA(size_t index, bool value){
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4081 error: output index out of range. Valid indices are 0 to 3.");
     }
     input_A[index] = value;
     updateOutputs();
@@ -65,7 +65,7 @@ void Chip4081::setInputA(size_t index, bool value){
 
 void Chip4081::setInputB(size_t index, bool value){
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4081 error: output index out of range. Valid indices are 0 to 3.");
     }
     input_B[index] = value;
     updateOutputs();
@@ -73,7 +73,7 @@ void Chip4081::setInputB(size_t index, bool value){
 
 bool Chip4081::getOutput(size_t index) const{
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4081 error: output index out of range. Valid indices are 0 to 3.");
     }
     return output_C[index];
 }
@@ -86,7 +86,7 @@ bool Chip4081::getOutput(size_t index) const{
 
 bool Chip4029::getOutput(size_t index) const{
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4029 error: output index out of range. Valid indices are 0 to 3.");
     }
     return outputs[index];
 }
@@ -278,7 +278,7 @@ void Chip4511::updateSegmentsOut(){
 }
 
 
-bool Chip4511::getSegmentsOut(size_t index) const {
+bool Chip4511::getSegmentsOut(size_t index) const{
     if(index >= segmentsOut.size()){
         return false;
     }
@@ -324,14 +324,14 @@ bool Chip4040::getOutput(size_t index) const{
 */
 
 void Chip4063::updateOutputs() {
-    for (int i = 3; i >= 0; i--) {
-        if (input_A[i] && !input_B[i]) {
+    for(int i = 3; i >= 0; i--){
+        if(input_A[i] && !input_B[i]){
             outputGreater = true;
             outputSmaller = false;
             outputEqual   = false;
             return;
         }
-        if (!input_A[i] && input_B[i]) {
+        if(!input_A[i] && input_B[i]){
             outputGreater = false;
             outputSmaller = true;
             outputEqual   = false;
@@ -346,7 +346,7 @@ void Chip4063::updateOutputs() {
 
 void Chip4063::setInputA(size_t index, bool value){
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4063 error: output index out of range. Valid indices are 0 to 3.");
     }
     input_A[index] = value;
     updateOutputs();
@@ -355,7 +355,7 @@ void Chip4063::setInputA(size_t index, bool value){
 
 void Chip4063::setInputB(size_t index, bool value){
     if(index >= 4){
-        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+        throw std::invalid_argument("Chip4063 error: output index out of range. Valid indices are 0 to 3.");
     }
     input_B[index] = value;
     updateOutputs();
@@ -363,32 +363,94 @@ void Chip4063::setInputB(size_t index, bool value){
 
 
 
-void Chip4063::setInputEqual(bool value) {
+void Chip4063::setInputEqual(bool value){
     inputEqual = value;
     updateOutputs();
 }
 
-void Chip4063::setInputGreater(bool value) {
+void Chip4063::setInputGreater(bool value){
     inputGreater = value;
     updateOutputs();
 }
 
-void Chip4063::setInputSmaller(bool value) {
+void Chip4063::setInputSmaller(bool value){
     inputSmaller = value;
     updateOutputs();
 }
 
 
 
-bool Chip4063::getOutputEqual() const {
+bool Chip4063::getOutputEqual() const{
     return outputEqual;
 }
 
-bool Chip4063::getOutputGreater() const {
+bool Chip4063::getOutputGreater() const{
     return outputGreater;
 }
 
-bool Chip4063::getOutputSmaller() const {
+bool Chip4063::getOutputSmaller() const{
     return outputSmaller;
 }
 
+
+/*
+    Chip4013
+*/
+
+void Chip4013::updateOutputs(size_t flipflop){
+    negOutput[flipflop] = !output[flipflop];
+}
+
+
+Chip4013::Chip4013() {
+    output.fill(false);
+    negOutput.fill(true);
+    data.fill(false);
+}
+
+void Chip4013::setData(size_t flipflop, bool value){
+    if(flipflop >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    data[flipflop] = value;
+}
+
+
+void Chip4013::set(size_t flipflop){
+    if(flipflop >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    output[flipflop] = true;
+    updateOutputs(flipflop);
+}
+
+void Chip4013::reset(size_t flipflop){
+    if(flipflop >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    output[flipflop] = false;
+    updateOutputs(flipflop);
+}
+
+void Chip4013::clock(size_t flipflop){
+    if(flipflop >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    output[flipflop] = data[flipflop];
+    updateOutputs(flipflop);
+}
+
+
+bool Chip4013::getOutput(size_t index) const{
+    if(index >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    return output[index];
+}
+
+bool Chip4013::getNegOutput(size_t index) const{
+    if(index >= 2){
+        throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
+    }
+    return negOutput[index];
+}

@@ -56,6 +56,3 @@ bool FreqGenerator::getState() const{
     std::lock_guard<std::mutex> lock(mtx);
     return state.load();
 }
-
-
-

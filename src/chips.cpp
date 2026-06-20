@@ -316,3 +316,79 @@ void Chip4040::clock(){
 bool Chip4040::getOutput(size_t index) const{
     return outputs[index];
 }
+
+
+
+/*
+    Chip4063
+*/
+
+void Chip4063::updateOutputs() {
+    for (int i = 3; i >= 0; i--) {
+        if (input_A[i] && !input_B[i]) {
+            outputGreater = true;
+            outputSmaller = false;
+            outputEqual   = false;
+            return;
+        }
+        if (!input_A[i] && input_B[i]) {
+            outputGreater = false;
+            outputSmaller = true;
+            outputEqual   = false;
+            return;
+        }
+    }
+    outputGreater = inputGreater;
+    outputSmaller = inputSmaller;
+    outputEqual   = inputEqual;
+}
+
+
+void Chip4063::setInputA(size_t index, bool value){
+    if(index >= 4){
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+    }
+    input_A[index] = value;
+    updateOutputs();
+}
+
+
+void Chip4063::setInputB(size_t index, bool value){
+    if(index >= 4){
+        throw std::invalid_argument("Output error: output index out of range. Valid indices are 0 to 3.");
+    }
+    input_B[index] = value;
+    updateOutputs();
+}
+
+
+
+void Chip4063::setInputEqual(bool value) {
+    inputEqual = value;
+    updateOutputs();
+}
+
+void Chip4063::setInputGreater(bool value) {
+    inputGreater = value;
+    updateOutputs();
+}
+
+void Chip4063::setInputSmaller(bool value) {
+    inputSmaller = value;
+    updateOutputs();
+}
+
+
+
+bool Chip4063::getOutputEqual() const {
+    return outputEqual;
+}
+
+bool Chip4063::getOutputGreater() const {
+    return outputGreater;
+}
+
+bool Chip4063::getOutputSmaller() const {
+    return outputSmaller;
+}
+

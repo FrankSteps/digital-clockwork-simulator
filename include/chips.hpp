@@ -29,7 +29,7 @@ class Chip4017 {
 
 // AND gates chip class
 class Chip4081 {
-    protected:
+    private:
         std::array<bool, 4> input_A  = {0,0,0,0};
         std::array<bool, 4> input_B  = {0,0,0,0};
         std::array<bool, 4> output_C = {0,0,0,0};
@@ -124,6 +124,41 @@ class Chip4040{
         void clock();
 
         bool getOutput(size_t value) const;
+};
+
+
+// magnitude comparator
+class Chip4063 {
+    private:
+        std::array<bool, 4> input_A{0,0,0,0};
+        std::array<bool, 4> input_B{0,0,0,0};
+
+
+        bool inputEqual   = false,
+             inputGreater = false,
+             inputSmaller = false;
+
+
+        bool outputEqual   = false,
+             outputGreater = false,
+             outputSmaller = false;
+
+
+        void updateOutputs();
+
+    public:
+        Chip4063() = default;
+
+        void setInputA(size_t index, bool value);
+        void setInputB(size_t index, bool value);
+
+        void setInputEqual(bool value);
+        void setInputGreater(bool value);
+        void setInputSmaller(bool value);
+
+        bool getOutputEqual() const;
+        bool getOutputGreater() const;
+        bool getOutputSmaller() const;
 };
 
 #endif

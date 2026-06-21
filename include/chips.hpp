@@ -1,10 +1,17 @@
 #ifndef CHIPS_HPP
 #define CHIPS_HPP
 
+// libraries
 #include <cstdint>
 #include <array>
 #include <stdexcept>
 
+#include <condition_variable>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <chrono>
+#include <mutex>
 
 // Johnson counter chip class
 class Chip4017 {
@@ -165,9 +172,9 @@ class Chip4063 {
 // Flip-Flops D
 class Chip4013 {
     private:
-        std::array<bool, 2> output;     // Q
-        std::array<bool, 2> negOutput;  // ~Q
-        std::array<bool, 2> data;       // D
+        std::array<bool, 2> output;                  // Q
+        std::array<bool, 2> negOutput;               // ~Q
+        std::array<bool, 2> data;                    // D
 
         void updateOutputs(size_t flipflop);
 
@@ -182,6 +189,42 @@ class Chip4013 {
 
         bool getOutput(size_t index) const;
         bool getNegOutput(size_t index) const;
+};
+
+
+// astable multivibrator chip class
+class Chip555 {
+    private:
+        double R1, R2, C;
+
+        double tHigh  = 0.0;
+        double tLow   = 0.0;
+        double period = 0.0;
+        double freq   = 0.0;
+
+        const double Ln2 = 0.693;
+
+        std::atomic<bool> running{false};
+        std::atomic<bool> state{false};
+
+        std::thread clkThread;
+        std::condition_variable condv;
+        mutable std::mutex mtx;
+
+        void calcTimings();                         // calculates tHigh, tLow, period and frequency from R1, R2 and C
+        void run();                                 // thread loop: toggles state at tHigh and tLow intervals
+
+    public:
+        explicit Chip555(double r1Ohms, double r2Ohms, double cFarads);
+
+        void start();                               // starts the oscillator thread
+        void stop();                                // stops the oscillator thread and waits for it to finish
+        void waitEdge(bool prevState);              // blocks until the signal changes state (edge detection)
+        bool getState() const;                      // returns the current signal state (thread-safe)
+        double getFrequency() const;                // returns the oscillation frequency in Hz
+        double getPeriod() const;                   // returns the full period in seconds
+        double getTHigh() const;                    // returns the time of high state
+        double getTLow() const;                     // returns the time of low state
 };
 
 #endif

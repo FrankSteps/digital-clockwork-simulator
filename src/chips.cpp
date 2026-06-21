@@ -1,5 +1,11 @@
 #include "chips.hpp"
+
+#include <condition_variable>
 #include <iostream>
+#include <atomic>
+#include <thread>
+#include <chrono>
+#include <mutex>
 
 
 /*
@@ -453,4 +459,114 @@ bool Chip4013::getNegOutput(size_t index) const{
         throw std::invalid_argument("Chip4013 error: flipflop index out of range. Valid indices are 0 to 1.");
     }
     return negOutput[index];
+}
+
+
+
+/*
+    Chip555 in Astable Mode
+*/
+
+void Chip555::calcTimings() {
+    tHigh  = Ln2 * (R1 + R2) * C;
+    tLow   = Ln2 * R2 * C;
+    period = tHigh + tLow;
+    freq   = (period > 0) ? (1.0 / period) : 0.0;
+}
+
+/*
+    Thread loop: toggles state HIGH for tHigh seconds, then LOW for tLow seconds.
+    Uses sleep_until anchored to absolute time points to reduce cumulative drift.
+*/
+void Chip555::run() {
+    std::chrono::steady_clock::time_point next = std::chrono::steady_clock::now();
+
+    std::chrono::steady_clock::duration halfHigh = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+        std::chrono::duration<double>(tHigh)
+    );
+
+    std::chrono::steady_clock::duration halfLow = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+        std::chrono::duration<double>(tLow)
+    );
+
+    while(running) {
+        next += halfHigh;
+        std::this_thread::sleep_until(next);
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            state = true;
+        }
+        condv.notify_all();
+
+        next += halfLow;
+        std::this_thread::sleep_until(next);
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            state = false;
+        }
+        
+        condv.notify_all();
+    }
+}
+
+
+Chip555::Chip555(double r1Ohms, double r2Ohms, double cFarads) : R1(r1Ohms), R2(r2Ohms), C(cFarads) {
+    if(R1 <= 0 || R2 <= 0 || C <= 0) {
+        throw std::invalid_argument("Chip555 error: R1, R2 and C must be greater than 0.");
+    }
+    calcTimings();
+}
+
+// starts the oscillator thread
+void Chip555::start() {
+    running = true;
+    
+    clkThread = std::thread([this]() {
+        run();
+    });
+}
+
+// stops the oscillator thread and waits for it to finish
+void Chip555::stop() {
+    running = false;
+    condv.notify_all();
+
+    if(clkThread.joinable()){
+        clkThread.join();
+    }
+}
+
+// blocks until the signal changes state (edge detection)
+void Chip555::waitEdge(bool prevState) {
+    std::unique_lock<std::mutex> lock(mtx);
+
+    condv.wait(lock, [&]{
+        return state != prevState;
+    });
+}
+
+// returns the current signal state (thread-safe)
+bool Chip555::getState() const{
+    std::lock_guard<std::mutex> lock(mtx);
+    return state.load();
+}
+
+
+double Chip555::getFrequency() const{
+    return freq;
+}
+
+
+double Chip555::getPeriod() const{
+    return period;
+}
+
+
+double Chip555::getTHigh() const{
+    return tLow;
+}
+
+
+double Chip555::getTLow() const{
+    return tLow;
 }

@@ -238,6 +238,19 @@ std::array<std::array<bool, 7>, 4> DigitalClockwork::getSegmentsOutput(){
 }
 
 
+//  Returns the current seven-segment output state of all four display digits
+std::array<std::array<bool, 4>, 4> DigitalClockwork::getCountersOutput(){
+    std::array<std::array<bool, 4>, 4> table = {{}};
+
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
+            table[i][j] = cd4029[i]->getOutput(j);
+        }
+    }
+    return table;
+}
+
+
 // AM or PM?
 bool DigitalClockwork::getMeridien(size_t value){
     return cd4017->getOutput(value);

@@ -22,7 +22,7 @@ class DigitalClockwork{
         Chip4040* cd4040;
 
         // Edge detection flags for frequency conversion
-        bool lastQ0 = false;       
+        bool lastQ0 = false;    
         bool lastQ5 = false;           
         bool lastOut4081 = false; 
         bool meridienEdge = false;
@@ -31,12 +31,12 @@ class DigitalClockwork{
         int defaultCooldown = 0;
 
 
-        void cascadeCount();        // Simulates the ripple carry between the minute counters
-        void updateAND();           // Updates all four AND gates of cd4081[0]
-        void applyResets();         // Applies resets and special clock pulses based on AND gate outputs
-        void updateDisplays();      // updating the seven-segment display state
-        void updateCounter();       // Orchestrates the full update cycle in the correct order
-        void updateAND_1();         // Updates all four AND gates of cd4081[1]
+        void cascadeCount();                             // Simulates the ripple carry between the minute counters
+        void updateAND();                                // Updates all four AND gates of cd4081[0]
+        void applyResets();                              // Applies resets and special clock pulses based on AND gate outputs
+        void updateDisplays();                           // updating the seven-segment display state
+        void updateCounter();                            // Orchestrates the full update cycle in the correct order
+        void updateAND_1();                              // Updates all four AND gates of cd4081[1]
 
 
         /*
@@ -62,6 +62,10 @@ class DigitalClockwork{
         // Returns the current seven-segment output state of all four display digits
         std::array<std::array<bool, 7>, 4> getSegmentsOutput();
 
+        // Returns the current output state of all four counters
+        std::array<std::array<bool, 4>, 4> getCountersOutput();
+
+        // AM or PM?
         bool getMeridien(size_t value);
 };
 

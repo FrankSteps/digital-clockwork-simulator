@@ -573,16 +573,16 @@ double Chip555::getTLow() const{
 
 
 /*
-    Chip4081
+    Chip4071
 */
 
-void Chip4081::updateOutputs(){
+void Chip4071::updateOutputs(){
     for(int i = 0; i < 4; i++){
         output_C[i] = input_A[i] || input_B[i];
     }
 }
 
-void Chip4081::setInputA(size_t index, bool value){
+void Chip4071::setInputA(size_t index, bool value){
     if(index >= 4){
         throw std::invalid_argument("Chip4071 error: input A index out of range. Valid indices are 0 to 3.");
     }
@@ -590,7 +590,7 @@ void Chip4081::setInputA(size_t index, bool value){
     updateOutputs();
 }
 
-void Chip4081::setInputB(size_t index, bool value){
+void Chip4071::setInputB(size_t index, bool value){
     if(index >= 4){
         throw std::invalid_argument("Chip4071 error: input B index out of range. Valid indices are 0 to 3.");
     }
@@ -598,7 +598,7 @@ void Chip4081::setInputB(size_t index, bool value){
     updateOutputs();
 }
 
-bool Chip4081::getOutput(size_t index) const{
+bool Chip4071::getOutput(size_t index) const{
     if(index >= 4){
         throw std::invalid_argument("Chip4071 error: output index out of range. Valid indices are 0 to 3.");
     }

@@ -227,4 +227,22 @@ class Chip555 {
         double getTLow() const;                     // returns the time of low state
 };
 
+
+// OR gates chip class
+class Chip4071 {
+    private:
+        std::array<bool, 4> input_A  = {0,0,0,0};
+        std::array<bool, 4> input_B  = {0,0,0,0};
+        std::array<bool, 4> output_C = {0,0,0,0};
+        
+        void updateOutputs();
+
+    public:
+        Chip4071() = default;
+
+        void setInputA(size_t index, bool value);
+        void setInputB(size_t index, bool value);
+        bool getOutput(size_t index) const;
+};
+
 #endif

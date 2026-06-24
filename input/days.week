@@ -1,0 +1,11 @@
+# Weekday alarm configuration
+# Set 1 to enable the alarm on that day, 0 to disable it
+# Lines starting with # are treated as comments
+
+SUN=0
+MON=1
+TUE=1
+WED=1
+THU=1
+FRI=1
+SAT=0

@@ -12,13 +12,22 @@
     Chip4017
 */
 
-Chip4017::Chip4017(unsigned limitReset, bool clockEnable) : LimitReset(limitReset), ClockEnable(clockEnable) {
-    if (LimitReset < 1 || LimitReset > 10) {
-        throw std::invalid_argument("Chip4017 error: Chip4017 index out of range. Valid indices are 1 to 10.");
-    }
+Chip4017::Chip4017() {
     value = 1;
     reset();
 }
+
+void Chip4017::setReset(unsigned value){
+    if(value <= 0 || value > 10){
+        throw std::invalid_argument("Chip4017 error: input A index out of range. Valid indices are 1 to 10.");
+    }
+    LimitReset = value;
+}
+
+void Chip4017::setClockEnable(bool value){
+    ClockEnable = value;
+}
+
 
 void Chip4017::shift() {
     if (!ClockEnable){
@@ -38,13 +47,19 @@ void Chip4017::shift() {
     }
 }
 
+
 void Chip4017::reset() {
     outputs = {1,0,0,0,0,0,0,0,0,0};
 }
 
+
 bool Chip4017::getOutput(size_t index) const {
+    if(index >= 10){
+        throw std::invalid_argument("Chip4017 error: index out of range. Valid indices are 0 to 9.");
+    }
     return outputs[index];
 }
+
 
 unsigned Chip4017::getLimitReset() const {
     return LimitReset;

@@ -23,11 +23,15 @@ class Chip4017 {
 
         unsigned int value = 0;  
 
+        void reset();
+
     public:
-        explicit Chip4017(unsigned limitReset = 10, bool clockEnable = false);
+        Chip4017();
+
+        void setReset(unsigned value = 10);
+        void setClockEnable(bool value);
 
         void shift();
-        void reset();
 
         bool getOutput(size_t index) const;
         unsigned getLimitReset() const;

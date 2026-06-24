@@ -21,7 +21,7 @@ Below is an image of the original hardware project:
 
 ## Extension
 
-As a final assignment for the Digital Systems course, offered by the Computer Department at Universidade Federal de Sergipe (UFS) and taught by Prof. Dr. Calebe Micael de Oliveira Conceição and Prof. Rodolfo Botto de Barros Garcia, we were challenged to extend the Digital Clockwork with a fully functional alarm system.
+1. As a final assignment for the Digital Systems course, offered by the Computer Department at Universidade Federal de Sergipe (UFS) and taught by Prof. Dr. Calebe Micael de Oliveira Conceição and Prof. Rodolfo Botto de Barros Garcia, we were challenged to extend the Digital Clockwork with a fully functional alarm system.
 
 ---
 
@@ -44,15 +44,6 @@ digital-clockwork-simulator
 │   ├── clockwork-board.png
 │   ├── counter.png
 │   └── dividefreq.png
-├── builds                           #
-│   ├── 4013test 
-│   ├── 4017test 
-│   ├── 4029test 
-│   ├── 4040test
-│   ├── 4063test
-│   ├── 4511test
-│   ├── digitalClock
-│   └── frequencytest
 ├── docs                             # code and project documentation
 │   ├── documentation.pdf
 │   └── documentation.tex
@@ -118,4 +109,4 @@ See the `LICENSE` file for more details.
 
 > This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
 
-> Building this little horrorshow was almost as pleasurable as the good old in-output, in-output.
+> Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

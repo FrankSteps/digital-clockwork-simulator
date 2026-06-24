@@ -45,6 +45,13 @@
 
 
 int main(){
+    /*
+    
+        COMUNICATION
+        KEYBOARD EVENT: LINUX
+    
+    */
+
     // open keyboard device
     int fd = open("/dev/input/event4", O_RDONLY | O_NONBLOCK);
 
@@ -59,64 +66,29 @@ int main(){
 
 
 
-    // initial preset value for all BCD counters
-    const std::array<bool, 4> presetZero = {0,0,0,0};
-
-    
-    // instantiate BCD counters, decoders and AND gate chips
-    std::array<Chip4029, 4> cd4029 = {
-        Chip4029(presetZero),
-        Chip4029(presetZero),
-        Chip4029({1,0,0,0}),
-        Chip4029(presetZero)
-    };
-
-    std::array<Chip4511, 4> cd4511{};
-    std::array<Chip4081, 2> cd4081{};  
-                                                        
-    FreqGenerator clk;                                  // frequency: 60 Hz       
-    Chip4017 cd4017(2, true);                           // AM/PM indicator
-    Chip4040 cd4040;                                    // 12-stage ripple counter — frequency divider
-
-
     // feedback components
     Display display;
     Led AM;
     Led PM;
 
+
+    /*
+
+        INSTANTIATE: A DIGITAL CLOCKWORK
+
+    */
+    DigitalClockwork functions;
+
+
+
+    /*
+
+        RUN PROGRAMM
     
-    // create pointer arrays to pass chips into DigitalClockwork
-    std::array<Chip4029*, 4> ptr4029;
-    std::array<Chip4511*, 4> ptr4511;
-    std::array<Chip4081*, 2> ptr4081;
-
-    for(int i = 0; i < 4; i++){
-        ptr4029[i] = &cd4029[i];
-        ptr4511[i] = &cd4511[i];
-    }
-
-    for(int i = 0; i < 2; i++){
-        ptr4081[i] = &cd4081[i];
-    }
-
-
-    // instantiate the main clockwork controller
-    DigitalClockwork functions(
-        ptr4029,
-        ptr4511,
-        ptr4081,
-        &cd4017,
-        &cd4040  
-    );
-
-
-    // configure all counters and decoders             
-    for(int i = 0; i < 4; i++){
-        cd4511[i].setLampTest(true);                    // enable normal display output
-        cd4511[i].setBlanking(true);                    // enable segment output
-        cd4029[i].setBinaryDecade(false);               // set to decimal (BCD) mode
-        cd4029[i].setUpDown(true);                      // set to count up
-    }
+    */
+    
+    // frequency generator: 60 Hz
+    FreqGenerator clk;      
 
 
     // start the 60Hz frequency generator
@@ -128,6 +100,7 @@ int main(){
     // terminal config
     system("clear");
     system("stty -echo");
+
 
     // updates the clock on each rising edge of the frequency generator
     while(true) {
@@ -161,7 +134,7 @@ int main(){
         clk.waitEdge(lastState);
         bool curState = clk.getState();
 
-        if(!lastState && curState){
+        if(curState && !lastState){
             std::cout << "\033[H";
             functions.updateSystem(mode);
 
@@ -178,13 +151,19 @@ int main(){
     }
 
 
+
+    /*
+
+        FINISH PROGRAMM
+    
+    */
+
     // stop the frequency generator, the keyboard reader and finish this program
     clk.stop();
 
     libevdev_free(dev);
     close(fd);
 
-    // echo enable
     system("stty echo");
 
     return EXIT_SUCCESS;

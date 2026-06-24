@@ -4,6 +4,7 @@
 #include "chips.hpp"
 #include <array>
 
+
 // DigitalClockwork board class 
 class DigitalClockwork{
     // Enum class placed here so it can be accessed by all encapsulated methods
@@ -15,12 +16,19 @@ class DigitalClockwork{
         };
 
     private:
-        std::array<Chip4029*, 4> cd4029;
-        std::array<Chip4511*, 4> cd4511;
-        std::array<Chip4081*, 2> cd4081;
-        Chip4017* cd4017;
-        Chip4040* cd4040;
+        Chip4029 cd4029[4] = {
+            Chip4029({0,0,0,0}),
+            Chip4029({0,0,0,0}),
+            Chip4029({1,0,0,0}),
+            Chip4029({0,0,0,0})
+        };
 
+        Chip4511 cd4511[4];
+        Chip4081 cd4081[2];
+        Chip4017 cd4017;
+        Chip4040 cd4040;
+
+        
         // Edge detection flags for frequency conversion
         bool lastQ0 = false;    
         bool lastQ5 = false;           
@@ -38,7 +46,6 @@ class DigitalClockwork{
         void updateCounter();                            // Orchestrates the full update cycle in the correct order
         void updateAND_1();                              // Updates all four AND gates of cd4081[1]
 
-
         /*
             Acquires the clock signal from cd4040 and divides its frequency
             to control the counting speed of the clock
@@ -47,14 +54,7 @@ class DigitalClockwork{
 
 
     public:
-        DigitalClockwork(
-            // Use arrays instead of pointers makes the constructor feels safe
-            std::array<Chip4029*, 4> chips4029,
-            std::array<Chip4511*, 4> chips4511,
-            std::array<Chip4081*, 2> chips4081,
-            Chip4017* chip4017,
-            Chip4040* chip4040
-        );
+        DigitalClockwork();
 
         // Advances the system clock and updates the circuit based on the selected mode
         void updateSystem(ADJUSTMENT MODE = ADJUSTMENT::DEFAULT);

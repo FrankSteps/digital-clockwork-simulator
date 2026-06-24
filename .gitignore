@@ -1,7 +1,6 @@
 builds/
 .vscode/
 verilog/
-input/
 
 *.exe
 *.out

@@ -2,7 +2,6 @@
 
 Viddy well, little brother. This project is queer, queer like a clockwork orange!
 
-
 **A Digital Clockwork** is a digital clock circuit simulator inspired by a project created by Wagner Rambo and presented on his YouTube channel, **WR Kits**.
 
 This simulator was developed as a way to study digital circuit behavior, low-level hardware concepts, discrete logic, and the internal operation of integrated circuits such as **CD4017**, **CD4029**, **CD4511**, and others used in the original design.
@@ -19,7 +18,7 @@ Below is an image of the original hardware project:
 
 ---
 
-## Extension
+## Extensions
 
 1. As a final assignment for the Digital Systems course, offered by the Computer Department at Universidade Federal de Sergipe (UFS) and taught by Prof. Dr. Calebe Micael de Oliveira Conceição and Prof. Rodolfo Botto de Barros Garcia, we were challenged to extend the Digital Clockwork with a fully functional alarm system.
 
@@ -53,6 +52,8 @@ digital-clockwork-simulator
 │   ├── digitalClockwork.hpp
 │   ├── feedback.hpp
 │   └── freqGenerator.hpp
+├── input                            # Input configurations to simulate the switches"
+│   └── days.week
 ├── src                              # Source code files
 │   ├── chips.cpp
 │   ├── digitalAlarm.cpp
@@ -67,7 +68,8 @@ digital-clockwork-simulator
 │   ├── 4040test.cpp
 │   ├── 4063test.cpp
 │   ├── 4511test.cpp
-│   └── frequencytest.cpp
+│   ├── frequencytest.cpp
+│   └── keyboardtest.cpp
 ├── .gitignore                       # Git ignored files configuration
 ├── LICENSE                          # Project license
 ├── Makefile                         # Build automation file
@@ -87,6 +89,7 @@ cd digital-clockwork-simulator
 
 make runClock
 ```
+
 ---
 
 ## Important Note
@@ -108,5 +111,4 @@ See the `LICENSE` file for more details.
 ## Fun Facts
 
 > This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
-
 > Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

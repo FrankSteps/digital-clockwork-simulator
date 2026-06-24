@@ -144,7 +144,6 @@ class Chip4063 {
         std::array<bool, 4> input_A{0,0,0,0};
         std::array<bool, 4> input_B{0,0,0,0};
 
-
         bool inputEqual   = false,
              inputGreater = false,
              inputSmaller = false;

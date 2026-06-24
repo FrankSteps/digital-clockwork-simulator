@@ -65,8 +65,13 @@ int main(){
     libevdev_new_from_fd(fd, &dev);
 
 
+    /*
+    
+        INSTANTIATE:
+        FEEDBACK COMPONENTS
+    
+    */
 
-    // feedback components
     Display display;
     Led AM;
     Led PM;
@@ -74,16 +79,28 @@ int main(){
 
     /*
 
-        INSTANTIATE: A DIGITAL CLOCKWORK
+        INSTANTIATE: 
+        A DIGITAL CLOCKWORK
 
     */
-    DigitalClockwork functions;
 
+    DigitalClockwork clockwork;
+
+
+    /*
+    
+        INSTANTIATE: 
+        THE AMAZING DIGITAL ALARM
+    
+    */
+
+    DigitalAlarm alarm;
 
 
     /*
 
-        RUN PROGRAMM
+        RUN:
+        PROGRAMM
     
     */
     
@@ -136,12 +153,12 @@ int main(){
 
         if(curState && !lastState){
             std::cout << "\033[H";
-            functions.updateSystem(mode);
+            clockwork.updateSystem(mode);
 
-            std::array<std::array<bool, 7>, 4> segments = functions.getSegmentsOutput();
+            std::array<std::array<bool, 7>, 4> segments = clockwork.getSegmentsOutput();
 
-            AM.setState(functions.getMeridien(0));
-            PM.setState(functions.getMeridien(1));
+            AM.setState(clockwork.getMeridien(0));
+            PM.setState(clockwork.getMeridien(1));
 
             std::cout << display.render(segments) << " | "; 
             std::cout << "AM:" << AM.getState() << "  PM:" << PM.getState() << " |\n";        
@@ -154,7 +171,8 @@ int main(){
 
     /*
 
-        FINISH PROGRAMM
+        FINISH:
+        PROGRAMM
     
     */
 

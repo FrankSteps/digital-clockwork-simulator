@@ -94,6 +94,8 @@ cd digital-clockwork-simulator
 make runClock
 ```
 
+![The Digital Clockwork Simulator + The Amazing Digital Alarm](assets/simulator.png)
+
 ## Known Limitations
 
 The current Linux implementation captures keyboard input via `libevdev`, which requires read access to `/dev/input/eventX`. This demands either `sudo` or adding the user to the `input` group via `newgrp input`, which is far from ideal.

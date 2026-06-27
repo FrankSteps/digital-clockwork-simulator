@@ -34,6 +34,9 @@ $(BUILD)/555test: tests/555test.cpp $(SRC)
 	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@ $(LIBS) -lasound
 
 
+$(BUILD)/keyboardtest: tests/keyboardtest.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@ $(shell pkg-config --libs libevdev)
+
 
 # CLOCKWORK
 runClock: $(BUILD) $(CLOCK_BIN)
@@ -47,3 +50,4 @@ $(CLOCK_BIN): $(CLOCK_SRC) $(SRC)
 # CLEAR
 clean:
 	rm -rf $(BUILD)
+

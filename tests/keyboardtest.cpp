@@ -1,3 +1,7 @@
+/*
+
+*/
+
 #include <libevdev/libevdev.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -8,7 +12,7 @@ int main(){
     int fd = open("/dev/input/event4", O_RDONLY | O_NONBLOCK);
 
     if(fd < 0){
-        std::cerr << "Erro ao abrir o dispositivo. Tente outro event number.\n";
+        std::cerr << "\n";
         return 1;
     }
 
@@ -23,9 +27,9 @@ int main(){
 
         if(rc == 0 && ev.type == EV_KEY){
             if(ev.value == 1){
-                std::cout << "Pressionado: " << libevdev_event_code_get_name(EV_KEY, ev.code) << "\n";
+                std::cout << "Pressed: " << libevdev_event_code_get_name(EV_KEY, ev.code) << "\n";
             } else if(ev.value == 0) {
-                std::cout << "Solto: "       << libevdev_event_code_get_name(EV_KEY, ev.code) << "\n";
+                std::cout << ": "       << libevdev_event_code_get_name(EV_KEY, ev.code) << "\n";
             }
         }
     }

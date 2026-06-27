@@ -1,5 +1,6 @@
 builds/
 .vscode/
+verilog/
 
 *.exe
 *.out

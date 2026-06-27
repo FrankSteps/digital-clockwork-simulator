@@ -8,7 +8,7 @@ BUILD = builds
 TEST_NAMES = 4511 4029 4040 4017 4013 4063 555 frequency keyboard
 
 TEST_BINS = $(addprefix $(BUILD)/, $(addsuffix test, $(TEST_NAMES)))
-CLOCK_SRC = src/main.cpp src/digitalClockwork.cpp
+CLOCK_SRC = src/main.cpp src/digitalClockwork.cpp src/digitalAlarm.cpp
 CLOCK_BIN = $(BUILD)/digitalClock
 
 .PHONY: all tests clean runClock

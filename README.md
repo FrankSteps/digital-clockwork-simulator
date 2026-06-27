@@ -6,8 +6,6 @@ Viddy well, little brother. This project is queer, queer like a clockwork orange
 
 This simulator was developed as a way to study digital circuit behavior, low-level hardware concepts, discrete logic, and the internal operation of integrated circuits such as **CD4017**, **CD4029**, **CD4511**, and others used in the original design.
 
----
-
 ## The Original Project
 
 This horrorshow is based on a digital clock circuit designed by Wagner Rambo and showcased on his YouTube channel: **WR Kits**.
@@ -16,13 +14,9 @@ Below is an image of the original hardware project:
 
 ![Original clock circuit](assets/clockwork-board.png)
 
----
-
 ## Extensions
 
 1. As a final assignment for the Digital Systems course, offered by the Computer Department at Universidade Federal de Sergipe (UFS) and taught by Prof. Dr. Calebe Micael de Oliveira Conceição and Prof. Rodolfo Botto de Barros Garcia, we were challenged to extend the Digital Clockwork with a fully functional alarm system.
-
----
 
 ## Purpose of This Repository
 
@@ -32,8 +26,6 @@ This repository serves as a personal experimental environment for:
 * Exploring low-level hardware concepts
 * Implementing circuit logic in **C++**
 * Experimenting with the simulation of discrete logic components
-
----
 
 ## Project Structure
 
@@ -76,8 +68,6 @@ digital-clockwork-simulator
 └── README.md                        # Project documentation
 ```
 
----
-
 ## Build and Run
 
 To compile and run the Digital Clockwork simulator:
@@ -90,23 +80,17 @@ cd digital-clockwork-simulator
 make runClock
 ```
 
----
-
 ## Important Note
 
 This project is **not intended to function as a real digital clock**, droog.
 
 Its purpose is to validate and explore the behavior of Wagner Rambo's original hardware design through computational simulation. The focus is on reproducing the logical behavior of the circuit rather than achieving precise real-time accuracy.
 
----
-
 ## License
 
 This project is distributed under the **GNU General Public License (GPL)**.
 
 See the `LICENSE` file for more details.
-
----
 
 ## Fun Facts
 

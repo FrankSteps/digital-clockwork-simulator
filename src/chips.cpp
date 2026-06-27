@@ -597,6 +597,7 @@ void Chip4071::updateOutputs(){
     }
 }
 
+
 void Chip4071::setInputA(size_t index, bool value){
     if(index >= 4){
         throw std::invalid_argument("Chip4071 error: input A index out of range. Valid indices are 0 to 3.");
@@ -605,6 +606,7 @@ void Chip4071::setInputA(size_t index, bool value){
     updateOutputs();
 }
 
+
 void Chip4071::setInputB(size_t index, bool value){
     if(index >= 4){
         throw std::invalid_argument("Chip4071 error: input B index out of range. Valid indices are 0 to 3.");
@@ -612,6 +614,7 @@ void Chip4071::setInputB(size_t index, bool value){
     input_B[index] = value;
     updateOutputs();
 }
+
 
 bool Chip4071::getOutput(size_t index) const{
     if(index >= 4){

@@ -43,12 +43,11 @@
 #include <unistd.h>                                     // close()
 
 
-
-int main(){
+int main(int argc, char* argv[]){
     /*
     
         COMUNICATION
-        KEYBOARD EVENT: LINUX
+        KEYBOARD EVENT: LINUX + PATH TO .WEEK
     
     */
 
@@ -65,6 +64,13 @@ int main(){
     libevdev_new_from_fd(fd, &dev);
 
 
+    // path to file.week?
+    if(argc < 2){
+        std::cerr << "usage: ./digital-clockwork <path/to/file.week>\n";
+        return EXIT_FAILURE;
+    }
+
+
     /*
     
         INSTANTIATE:
@@ -73,9 +79,13 @@ int main(){
     */
 
     Display display;
-    Led AM;
+    Led AM; 
     Led PM;
 
+    std::array<Led, 7> days; 
+    const char* dayNames[7] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+
+    Led ALARMLED;
 
     /*
 
@@ -94,7 +104,7 @@ int main(){
     
     */
 
-    DigitalAlarm alarm;
+    DigitalAlarm alarm(argv[1]);
 
 
     /*
@@ -119,6 +129,10 @@ int main(){
     system("stty -echo");
 
 
+    // Meridiem edge flag
+    bool lastMeridiem = false;
+
+
     // updates the clock on each rising edge of the frequency generator
     while(true) {
         // read keyboard input
@@ -128,6 +142,7 @@ int main(){
             if(ev.type == EV_KEY){
                 // key pressed
                 if(ev.value == 1){
+                    // CLOCKWORK CONFIG KEYS
                     if(ev.code == KEY_F){
                         mode = DigitalClockwork::ADJUSTMENT::FAST;
                     }
@@ -135,6 +150,25 @@ int main(){
                     if(ev.code == KEY_S){
                         mode = DigitalClockwork::ADJUSTMENT::SLOW;
                     }
+
+                    // ALARM CONFIG KEYS
+                    if(ev.code == KEY_P){ 
+                        alarm.programAlarm(); 
+                    }
+
+                    if(ev.code == KEY_A){ 
+                        alarm.advanceDay();   
+                    }
+
+                    if(ev.code == KEY_R){ 
+                        alarm.reset();        
+                    }
+
+                    /*
+                    if(ev.code == KEY_D){ 
+                        alarm.reset();        
+                    }
+                    */
                 }
 
                 // key released
@@ -145,7 +179,6 @@ int main(){
                 }
             }
         }
-
         
         // wait for rising edge and update the circuit
         clk.waitEdge(lastState);
@@ -160,8 +193,27 @@ int main(){
             AM.setState(clockwork.getMeridien(0));
             PM.setState(clockwork.getMeridien(1));
 
+            bool curMeridiem = clockwork.getMeridien(0);
+
+            if(curMeridiem && !lastMeridiem){
+                alarm.advanceDay();
+            }
+            lastMeridiem = curMeridiem;
+
+            alarm.setMeridiem(clockwork.getMeridien(0));
+            alarm.setDataMemory(clockwork.getCountersOutput());
+
             std::cout << display.render(segments) << " | "; 
-            std::cout << "AM:" << AM.getState() << "  PM:" << PM.getState() << " |\n";        
+            std::cout << "AM:" << AM.getState() << "  PM:" << PM.getState();
+
+            ALARMLED.setState(alarm.getOutputSystem());
+            std::cout << " | ALARM:" << ALARMLED.getState() << "\n"; 
+            
+            for(int i = 0; i < 7; i++){
+                days[i].setState(alarm.getCurrentDay(i));
+                std::cout << dayNames[i] << ":" << days[i].getState() << "  ";
+            }
+
         }
         
         lastState = curState;

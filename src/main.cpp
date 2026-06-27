@@ -87,6 +87,9 @@ int main(int argc, char* argv[]){
 
     Led ALARMLED;
 
+    Buzzer buzzer;
+    buzzer.start();
+
     /*
 
         INSTANTIATE: 
@@ -164,11 +167,9 @@ int main(int argc, char* argv[]){
                         alarm.reset();        
                     }
 
-                    /*
                     if(ev.code == KEY_D){ 
-                        alarm.reset();        
+                        alarm.disarm();        
                     }
-                    */
                 }
 
                 // key released
@@ -189,6 +190,7 @@ int main(int argc, char* argv[]){
             clockwork.updateSystem(mode);
 
             std::array<std::array<bool, 7>, 4> segments = clockwork.getSegmentsOutput();
+            alarm.setClockSignal(clockwork.get4040FrequencyQ6());
 
             AM.setState(clockwork.getMeridien(0));
             PM.setState(clockwork.getMeridien(1));
@@ -214,6 +216,7 @@ int main(int argc, char* argv[]){
                 std::cout << dayNames[i] << ":" << days[i].getState() << "  ";
             }
 
+            buzzer.setState(alarm.getOutputSystem());
         }
         
         lastState = curState;

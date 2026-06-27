@@ -122,6 +122,7 @@ void DigitalAlarm::loadWeekFile(const std::string& path){
 // AND gates combine cd4017 active output (current day) with weekDays switches.
 // OR cascade reduces the 7 AND outputs to a single day-match signal.
 // Called on advanceDay() and as part of updateComparators().
+// (A0 AND B0) OR (A AND B1) OR ... OR (A6 AND B6) 
 void DigitalAlarm::updateDayComparators(){
     // AND gates: Qn AND SWn
     cd4081[0].setInputA(0, cd4017.getOutput(0)); cd4081[0].setInputB(0, weekDays[0]);
@@ -201,6 +202,13 @@ void DigitalAlarm::updateTimeComparators(std::array<std::array<bool, 4>, 4> busD
     // alarm output
     cd4081[1].setInputA(3, checkDay());
     cd4081[1].setInputB(3, checkTime());
+
+
+    // logic for the alarm sound
+    cd4081[2].setInputA(0, cd4081[1].getOutput(3));
+    cd4081[2].setInputB(0, cd4013[8].getOutput(1));
+    cd4081[2].setInputA(1, cd4081[2].getOutput(0));
+    cd4081[2].setInputB(1, clockSig);
 }
 
 
@@ -264,6 +272,7 @@ DigitalAlarm::DigitalAlarm(const std::string& weekFilePath){
 // Key_P: clocks all time flip-flops via loadMemory(), then arms the alarm (cd4013[8] FF1).
 void DigitalAlarm::programAlarm(){
     loadMemory();
+    cd4013[8].setData(1, true);
     cd4013[8].clock(1);
 }
 
@@ -326,5 +335,17 @@ bool DigitalAlarm::getCurrentDay(size_t index) const{
 
 // Returns true when current day and time match the programmed alarm (cd4081[1] gate 3).
 bool DigitalAlarm::getOutputSystem() const{
-    return cd4081[1].getOutput(3);
+    return cd4081[2].getOutput(1);
+}
+
+
+// Key_D: resets cd4013[8] FF1, cutting the stand-by signal and stopping the alarm.
+void DigitalAlarm::disarm(){
+    cd4013[8].reset(1);
+}
+
+
+
+void DigitalAlarm::setClockSignal(bool Q6){
+    clockSig = Q6;
 }

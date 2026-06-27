@@ -10,13 +10,13 @@ class DigitalAlarm {
     private:
         Chip4013 cd4013[9];                                                                                 // flip-flops D — stores programmed time (17 bits HH:MM + Meridiem) + disarm
         Chip4063 cd4063[5];                                                                                 // magnitude comparators — cascaded
-        Chip4081 cd4081[2];                                                                                 // AND gates — combines time and day comparisons
+        Chip4081 cd4081[3];                                                                                 // AND gates — combines time and day comparisons
         Chip4071 cd4071[2];                                                                                 // OR gates — day comparison
         Chip4017 cd4017;                                                                                    // day of week indicator
 
         //bool armed = false;                                                                               // alarm armed state
-        //bool ringing = false;                                                                             // alarm ringing state
-        bool meridiem = false;                  
+        bool clockSig = false;                                                                             // alarm ringing state
+        bool meridiem = false;                                                                              //
 
         std::array<bool, 7> weekDays{};                                                                     // simulates the 7 ON/OFF switches (.week file)
     
@@ -32,17 +32,18 @@ class DigitalAlarm {
     public:                     
         DigitalAlarm(const std::string& weekFilePath);                   
 
-    void programAlarm();                                                                                    // Key_P: programs the alarm to the current time shown on the display
-    //void disarm();                                                                                        // Key_D: disarms the alarm while it is ringing
-    void advanceDay();                                                                                      // Key_A: advances the day on cd4017
-    void reset();                                                                                           // Key_R: applies reset to all flip-flops
+        void programAlarm();                                                                                // Key_P: programs the alarm to the current time shown on the display
+        void disarm();                                                                                      // Key_D: disarms the alarm while it is ringing
+        void advanceDay();                                                                                  // Key_A: advances the day on cd4017
+        void reset();                                                                                       // Key_R: applies reset to all flip-flops
         
-    void setMeridiem(bool meridien);                                                                        // receives current meridiem state from DigitalClockwork                      
-    void setDataMemory(std::array<std::array<bool, 4>, 4> busData);                                         // receives current time from DigitalClockwork
-                
-    bool getWeekDaysStatus(size_t index) const;                                                             // returns the state of a given weekday switch
-    bool getCurrentDay(size_t index) const;                                                                 // returns the current active day output from cd4017
-    bool getOutputSystem() const;                                                                           // returns true when alarm should ring
+        void setMeridiem(bool meridien);                                                                    // receives current meridiem state from DigitalClockwork                      
+        void setDataMemory(std::array<std::array<bool, 4>, 4> busData);                                     // receives current time from DigitalClockwork
+        void setClockSignal(bool Q6);
+        
+        bool getWeekDaysStatus(size_t index) const;                                                         // returns the state of a given weekday switch
+        bool getCurrentDay(size_t index) const;                                                             // returns the current active day output from cd4017
+        bool getOutputSystem() const;                                                                       // returns true when alarm should ring
 };
 
 #endif

@@ -67,6 +67,9 @@ class DigitalClockwork{
 
         // AM or PM?
         bool getMeridien(size_t value);
+
+        //
+        bool get4040FrequencyQ6();
 };
 
 #endif

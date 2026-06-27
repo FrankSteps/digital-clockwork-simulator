@@ -247,3 +247,9 @@ std::array<std::array<bool, 4>, 4> DigitalClockwork::getCountersOutput(){
 bool DigitalClockwork::getMeridien(size_t value){
     return cd4017.getOutput(value);
 }
+
+
+// Q6 ÷64 = 0,9375 Hz = 1,067 s
+bool DigitalClockwork::get4040FrequencyQ6(){
+    return cd4040.getOutput(5);
+}

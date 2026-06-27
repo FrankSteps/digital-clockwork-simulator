@@ -2,7 +2,7 @@
 # Set 1 to enable the alarm on that day, 0 to disable it
 # Lines starting with # are treated as comments
 
-SUN = 0
+SUN = 0     # comments can be inserted this way
 MON = 1
 TUE = 1
 WED = 1

@@ -96,6 +96,36 @@ make runClock
 
 ![The Digital Clockwork Simulator + The Amazing Digital Alarm](assets/simulator.png)
 
+## Using the Alarm and the Clockwork
+
+The alarm is configured through a combination of a `.week` file and keyboard controls.
+
+The `.week` file, located in the `input` folder, simulates seven physical ON/OFF switches — one per day of the week. Set `1` to enable the alarm on that day or `0` to disable it:
+
+```bash
+# Weekday alarm configuration
+# Set 1 to enable the alarm on that day, 0 to disable it
+# Lines starting with # are treated as comments
+SUN = 0     # comments can be inserted this way
+MON = 1
+TUE = 1
+WED = 1
+THU = 0
+FRI = 1
+SAT = 0
+```
+
+Comments are supported via `#`. The remaining configuration is done directly via keyboard:
+
+| Key | Name    | Description                                                                         |
+|-----|---------|-------------------------------------------------------------------------------------|
+| P   | Program | Latches the current displayed time into the alarm memory — "ring at this time"      |
+| A   | Advance | Advances the day-of-week counter on the CD4017                                      |
+| D   | Disarm  | Silences the active alarm and clears the stand-by state                             |
+| R   | Reset   | Wipes the alarm memory entirely — stored time, meridiem and stand-by                |
+| S   | Slow    | Hold to advance the clock slowly — useful for fine time adjustment                  |
+| F   | Fast    | Hold to advance the clock faster — useful for setting the time quickly              |
+
 ## Known Limitations
 
 The current Linux implementation captures keyboard input via `libevdev`, which requires read access to `/dev/input/eventX`. This demands either `sudo` or adding the user to the `input` group via `newgrp input`, which is far from ideal.

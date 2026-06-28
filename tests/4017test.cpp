@@ -27,8 +27,12 @@ void printChip(const Chip4017& chip, const std::string& name) {
 
 
 int main() {
-    const unsigned NUM_LAMPS = 2;
-    Chip4017 chip(NUM_LAMPS, true);
+    const unsigned NUM_LAMPS = 4;
+
+    Chip4017 chip;
+    
+    chip.setReset(NUM_LAMPS);
+    chip.setClockEnable(true);
 
     // main loop
     while (true) {

@@ -36,7 +36,8 @@ class DigitalAlarm {
         void disarm();                                                                                      // Key_D: disarms the alarm while it is ringing
         void advanceDay();                                                                                  // Key_A: advances the day on cd4017
         void reset();                                                                                       // Key_R: applies reset to all flip-flops
-        
+        void rearmStandby();                                                                                // rearm the 18° flip-flop
+
         void setMeridiem(bool meridien);                                                                    // receives current meridiem state from DigitalClockwork                      
         void setDataMemory(std::array<std::array<bool, 4>, 4> busData);                                     // receives current time from DigitalClockwork
         void setClockSignal(bool Q6);

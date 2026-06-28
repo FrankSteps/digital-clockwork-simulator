@@ -199,6 +199,7 @@ int main(int argc, char* argv[]){
 
             if(curMeridiem && !lastMeridiem){
                 alarm.advanceDay();
+                alarm.rearmStandby();
             }
             lastMeridiem = curMeridiem;
 

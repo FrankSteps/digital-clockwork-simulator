@@ -349,3 +349,9 @@ void DigitalAlarm::disarm(){
 void DigitalAlarm::setClockSignal(bool Q6){
     clockSig = Q6;
 }
+
+
+void DigitalAlarm::rearmStandby(){
+    cd4013[8].setData(1, true);
+    cd4013[8].clock(1);
+}

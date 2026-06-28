@@ -333,7 +333,7 @@ bool DigitalAlarm::getCurrentDay(size_t index) const{
 }
 
 
-// Returns true when current day and time match the programmed alarm (cd4081[1] gate 3).
+// Returns true when current day and time match the programmed alarm
 bool DigitalAlarm::getOutputSystem() const{
     return cd4081[2].getOutput(1);
 }

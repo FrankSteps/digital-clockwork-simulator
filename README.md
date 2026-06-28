@@ -10,10 +10,12 @@ This simulator was developed as a way to study digital circuit behavior, low-lev
 
 This horrorshow is based on a digital clock circuit designed by Wagner Rambo and showcased on his YouTube channel: **WR Kits**.
 Below is an image of the original hardware project:
-![Original clock circuit](assets/clockwork-board.png)
+![Original clock circuit](assets/a_digital_clockwork/clockwork-board.png)
 
 ## Purpose of This Repository
+
 This repository serves as a personal experimental environment for:
+
 * Studying digital circuit behavior through simulation
 * Exploring low-level hardware concepts
 * Implementing circuit logic in **C++**
@@ -28,11 +30,13 @@ This repository serves as a personal experimental environment for:
 * **libevdev** — used for real-time keyboard input detection on Linux
 
 To install it on Ubuntu/Debian:
+
 ```bash
 sudo apt install libevdev-dev
 ```
 
 ## Build and Run
+
 To compile and run the Digital Clockwork simulator:
 
 ```bash
@@ -55,16 +59,16 @@ cat /proc/bus/input/devices | grep -A5 -i "keyboard"
 
 And update the path in `src/digitalClockwork.cpp` accordingly.
 
-
 ## Controls
-| Key | Action |
-|-----|--------|
-| `F` | Fast mode — accelerates the clock |
-| `S` | Slow mode — decelerates the clock |
-| Release | Returns to default speed |
 
+|   Key   |               Action              |
+|---------|-----------------------------------|
+|   `F`   | Fast mode — accelerates the clock |
+|   `S`   | Slow mode — decelerates the clock |
+| Release | Returns to default speed          |
 
 ## Project Structure
+
 ```bash
 digital-clockwork-simulator
 ├── assets                           # Images and graphical resources
@@ -118,7 +122,7 @@ On Debian/Ubuntu:
 sudo apt install g++ libasound2-dev libevdev-dev
 ```
 
-## Build and Run
+## Build and run
 
 To compile and run the Digital Clockwork simulator:
 
@@ -130,7 +134,7 @@ cd digital-clockwork-simulator
 make runClock
 ```
 
-![The Digital Clockwork Simulator + The Amazing Digital Alarm](assets/simulator.png)
+![The Digital Clockwork Simulator + The Amazing Digital Alarm](assets/a_digital_clockwork/simulator.png)
 
 ## Using the Alarm and the Clockwork
 
@@ -169,13 +173,16 @@ The current Linux implementation captures keyboard input via `libevdev`, which r
 A migration to **SDL2** is planned on a dedicated branch, which will eliminate this requirement and make keyboard handling cross-platform and permission-free.
 
 ## Important Note
+
 This project is **not intended to function as a real digital clock**, droog.
 Its purpose is to validate and explore the behavior of Wagner Rambo's original hardware design through computational simulation. The focus is on reproducing the logical behavior of the circuit rather than achieving precise real-time accuracy.
 
 ## License
+
 This project is distributed under the **GNU General Public License (GPL)**.
 See the `LICENSE` file for more details.
 
 ## Fun Facts
+
 > This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
 > Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

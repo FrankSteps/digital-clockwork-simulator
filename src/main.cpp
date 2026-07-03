@@ -10,6 +10,10 @@
     foram usados, respectivamente, para a declaração e implementação dos artifícios responsáveis pelo feedback visual do usuário 
     no terminal.
 
+    A leitura de teclado é feita por trás da interface declarada em keyboard.hpp, implementada uma vez por 
+    sistema operacional (keyboard_linux.cpp, keyboard_windows.cpp, keyboard_macos.cpp). Apenas um desses arquivos 
+    é compilado por vez, escolhido pelo Makefile de acordo com o SO detectado.
+
 [EN-US]
     A Digital Clockwork simulates the logic of a digital clock circuit inspired by the project of Wagner Rambo (WR Kits).
     The class "DigitalClockwork" orchestrates the interaction between BCD counters (CD4029), seven-segment decoders (CD4511), 
@@ -21,8 +25,9 @@
     respectively, for the declaration and implementation of the mechanisms responsible for providing visual feedback to the user in 
     the terminal.
 
-[LINUX]
-    This main.cpp is only for Linux users
+    Keyboard reading is done behind the interface declared in keyboard.hpp, implemented once per operating 
+    system (keyboard_linux.cpp, keyboard_windows.cpp, keyboard_macos.cpp). Only one of these files is compiled 
+    at a time, chosen by the Makefile based on the detected OS.
 */
 
 //libraries
@@ -32,36 +37,23 @@
 #include "chips.hpp"                                    // CD4029, CD4511, CD4081, CD4017, CD4040...
 #include "feedback.hpp"                                 // Display, Led...
 #include "freqGenerator.hpp"                            // Frequency generator
+#include "keyboard.hpp"                                 // platform keyboard interface
 
 #include <iostream>                                     // std::cout, std::cerr
 #include <cstdlib>                                      // system()
 #include <string>                                       // std::string
 #include <array>                                        // std::array
 
-#include <libevdev/libevdev.h>                          // keyboard input events
-#include <fcntl.h>                                      // open(), O_RDONLY, O_NONBLOCK
-#include <unistd.h>                                     // close()
-
 
 int main(int argc, char* argv[]){
     /*
     
         COMUNICATION
-        KEYBOARD EVENT: LINUX + PATH TO .WEEK
+        KEYBOARD EVENT: PLATFORM-SPECIFIC (see keyboard.hpp) + PATH TO .WEEK
     
     */
 
-    // open keyboard device
-    int fd = open("/dev/input/event4", O_RDONLY | O_NONBLOCK);
-
-    if(fd < 0){
-        std::cerr << "The file couldn't open\n";
-        return EXIT_FAILURE;
-    }
-
-    // initialize libevdev device from file descriptor
-    struct libevdev* dev = nullptr;
-    libevdev_new_from_fd(fd, &dev);
+    initKeyboard();
 
 
     // path to file.week?
@@ -128,8 +120,11 @@ int main(int argc, char* argv[]){
     DigitalClockwork::ADJUSTMENT mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
 
     // terminal config
-    system("clear");
-    system("stty -echo");
+    terminalSetup();
+
+
+    // key edge tracking, replaces the (code, value) pair from the raw event sources
+    KeyState lastKeys = {false, false, false, false, false, false};
 
 
     // Meridiem edge flag
@@ -138,49 +133,41 @@ int main(int argc, char* argv[]){
 
     // updates the clock on each rising edge of the frequency generator
     while(true) {
-        // read keyboard input
-        struct input_event ev;
+        // read keyboard input: current state of each tracked key, platform-specific
+        KeyState curKeys = pollKeys();
 
-        if(libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev) == 0){
-            if(ev.type == EV_KEY){
-                // key pressed
-                if(ev.value == 1){
-                    // CLOCKWORK CONFIG KEYS
-                    if(ev.code == KEY_F){
-                        mode = DigitalClockwork::ADJUSTMENT::FAST;
-                    }
-
-                    if(ev.code == KEY_S){
-                        mode = DigitalClockwork::ADJUSTMENT::SLOW;
-                    }
-
-                    // ALARM CONFIG KEYS
-                    if(ev.code == KEY_P){ 
-                        alarm.programAlarm(); 
-                    }
-
-                    if(ev.code == KEY_A){ 
-                        alarm.advanceDay();   
-                    }
-
-                    if(ev.code == KEY_R){ 
-                        alarm.reset();        
-                    }
-
-                    if(ev.code == KEY_D){ 
-                        alarm.disarm();        
-                    }
-                }
-
-                // key released
-                if(ev.value == 0){
-                    if(ev.code == KEY_F || ev.code == KEY_S){
-                        mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
-                    }
-                }
-            }
+        // key pressed (rising edge)
+        if(curKeys.F && !lastKeys.F){
+            mode = DigitalClockwork::ADJUSTMENT::FAST;
         }
-        
+
+        if(curKeys.S && !lastKeys.S){
+            mode = DigitalClockwork::ADJUSTMENT::SLOW;
+        }
+
+        if(curKeys.P && !lastKeys.P){
+            alarm.programAlarm();
+        }
+
+        if(curKeys.A && !lastKeys.A){
+            alarm.advanceDay();
+        }
+
+        if(curKeys.R && !lastKeys.R){
+            alarm.reset();
+        }
+
+        if(curKeys.D && !lastKeys.D){
+            alarm.disarm();
+        }
+
+        // key released (falling edge)
+        if((!curKeys.F && lastKeys.F) || (!curKeys.S && lastKeys.S)){
+            mode = DigitalClockwork::ADJUSTMENT::DEFAULT;
+        }
+
+        lastKeys = curKeys;
+
         // wait for rising edge and update the circuit
         clk.waitEdge(lastState);
         bool curState = clk.getState();
@@ -232,13 +219,10 @@ int main(int argc, char* argv[]){
     
     */
 
-    // stop the frequency generator, the keyboard reader and finish this program
+    // stop the frequency generator, close the keyboard capture and restore the terminal
     clk.stop();
-
-    libevdev_free(dev);
-    close(fd);
-
-    system("stty echo");
+    closeKeyboard();
+    terminalTeardown();
 
     return EXIT_SUCCESS;
 }

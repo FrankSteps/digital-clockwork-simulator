@@ -1,19 +1,42 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude $(shell pkg-config --cflags libevdev)
+CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
+LIBS = -lpthread -lasound
 
-LIBS = $(shell pkg-config --libs libevdev) -lasound
 SRC = src/chips.cpp src/freqGenerator.cpp src/feedback.cpp
-
 BUILD = builds
-TEST_NAMES = 4511 4029 4040 4017 4013 4063 555 frequency keyboard
 
+TEST_NAMES = 4511 4029 4040 4017 4013 4063 555 frequency keyboard
 TEST_BINS = $(addprefix $(BUILD)/, $(addsuffix test, $(TEST_NAMES)))
+
 CLOCK_SRC = src/main.cpp src/digitalClockwork.cpp src/digitalAlarm.cpp
 CLOCK_BIN = $(BUILD)/digitalClock
 
-.PHONY: all tests clean runClock
+
+# OS DETECTION
+UNAME_S := $(shell uname -s 2>/dev/null)
+
+ifeq ($(UNAME_S),Linux)
+KEYBOARD_SRC := src/keyboard_linux.cpp
+CXXFLAGS += $(shell pkg-config --cflags libevdev)
+LIBS += $(shell pkg-config --libs libevdev)
+endif
+
+ifeq ($(UNAME_S),Darwin)
+KEYBOARD_SRC := src/keyboard_macintosh.cpp
+LIBS += -framework ApplicationServices -framework Carbon
+endif
+
+ifeq ($(OS),Windows_NT)
+KEYBOARD_SRC := src/keyboard_windows.cpp
+endif
+
+
+CLOCK_SRC += $(KEYBOARD_SRC)
+
+.PHONY: all tests clean clock
 
 all: tests
+
 
 $(BUILD):
 	mkdir -p $(BUILD)
@@ -25,23 +48,15 @@ tests: $(BUILD) $(TEST_BINS)
 $(BUILD)/%test: tests/%test.cpp $(SRC)
 	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@ $(LIBS)
 
-
-$(BUILD)/keyboardtest: tests/keyboardtest.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ $(LIBS)
-
-
 $(BUILD)/555test: tests/555test.cpp $(SRC)
-	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@ $(LIBS) -lasound
+	$(CXX) $(CXXFLAGS) $< $(SRC) -o $@ $(LIBS)
 
-
-$(BUILD)/keyboardtest: tests/keyboardtest.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ $(shell pkg-config --libs libevdev)
+$(BUILD)/keyboardtest: tests/keyboardtest.cpp $(KEYBOARD_SRC)
+	$(CXX) $(CXXFLAGS) $< $(KEYBOARD_SRC) -o $@ $(LIBS)
 
 
 # CLOCKWORK
-runClock: $(BUILD) $(CLOCK_BIN)
-	./$(CLOCK_BIN)
-
+clockwork: $(BUILD) $(CLOCK_BIN)
 
 $(CLOCK_BIN): $(CLOCK_SRC) $(SRC)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
@@ -50,4 +65,3 @@ $(CLOCK_BIN): $(CLOCK_SRC) $(SRC)
 # CLEAR
 clean:
 	rm -rf $(BUILD)
-

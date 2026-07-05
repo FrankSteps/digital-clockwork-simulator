@@ -5,7 +5,7 @@ LIBS = -lpthread
 SRC = src/chips.cpp src/freqGenerator.cpp src/feedback.cpp
 BUILD = builds
 
-TEST_NAMES = 4511 4029 4040 4017 4013 4063 555 frequency keyboard
+TEST_NAMES = 555 4013 4017 4029 4040 4063 4511 frequency
 TEST_BINS = $(addprefix $(BUILD)/, $(addsuffix test, $(TEST_NAMES)))
 
 CLOCK_SRC = src/main.cpp src/digitalClockwork.cpp src/digitalAlarm.cpp

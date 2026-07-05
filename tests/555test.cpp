@@ -10,6 +10,7 @@
 
 // libraries
 #include "chips.hpp"
+#include "audio_output.hpp"
 #include "feedback.hpp"
 #include <iostream>
 #include <thread>

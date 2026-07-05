@@ -35,26 +35,45 @@ The simulator runs on **Linux, Windows, and macOS**. Keyboard capture is impleme
 | Windows  | `src/keyboard_windows.cpp`   | `GetAsyncKeyState` (WinAPI), polling-based, no window required |
 | macOS    | `src/keyboard_macintosh.cpp` | `CGEventTap`, system-wide event tap, no window required        |
 
+Audio feedback (the alarm buzzer) follows the same pattern behind `include/audio_output.hpp`:
+
+| Platform | Implementation file                | Mechanism                                          |
+|----------|-------------------------------------|-----------------------------------------------------|
+| Linux    | `src/audio_output_linux.cpp`        | ALSA (`libasound`), blocking `snd_pcm_writei` writes |
+| Windows  | `src/audio_output_windows.cpp`      | WinMM (`waveOut*`), blocking buffer writes           |
+| macOS    | `src/audio_output_macintosh.cpp`    | CoreAudio `AudioQueue`, callback-driven buffer fill  |
+
+As with the keyboard, only one of these three files is compiled per platform, and `main.cpp` only interacts with `Buzzer` through the interface declared in `audio_output.hpp`.
+
 Only one of these three files is compiled at a time — the Makefile detects the host OS (`uname -s` on Linux/macOS, `$(OS)` on Windows) and selects the correct one automatically. `main.cpp` is identical across all platforms; it only calls the functions declared in `keyboard.hpp` and never knows which implementation is behind them.
 
 > **macOS note:** `CGEventTap` requires Accessibility permission granted to the compiled binary in *System Settings > Privacy & Security > Accessibility*. Without it, the tap is created successfully but silently receives no events — there is no error message, so if keys don't seem to register, check this first.
 
 ## Dependencies
 
-To build and run this project, the following must be installed:
+**Common (all platforms):**
 
-* **g++** — C++17 or later
+* **g++** or **clang++** — C++17 or later
 * **make** — build automation tool used to compile the project
-* **libasound2-dev** — ALSA library for audio output (Linux)
-* **libevdev-dev** — Linux keyboard input handling (Linux only)
 
-On Debian/Ubuntu:
+**Linux:**
+
+* **libasound2-dev** — ALSA library for audio output
+* **libevdev-dev** — keyboard input handling
 
 ```bash
 sudo apt install g++ libasound2-dev libevdev-dev
 ```
 
-Windows and macOS builds rely only on system frameworks already available with a standard C++ toolchain (WinAPI on Windows; `ApplicationServices` and `Carbon` on macOS) — no extra packages are required beyond `g++`/`clang` and `make`.
+**Windows:**
+
+* **MinGW-w64** (or another g++/MSVC toolchain with `make` available, e.g. via MSYS2)
+* No extra packages: keyboard and audio use `windows.h` (`GetAsyncKeyState`) and `winmm` (`waveOut*`), both included with the toolchain
+
+**macOS:**
+
+* **Xcode Command Line Tools** (`xcode-select --install`) — provides `clang++` and `make`
+* No extra packages: keyboard and audio use system frameworks already available (`ApplicationServices`, `Carbon`, `AudioToolbox`)
 
 ## Build and Run
 
@@ -66,6 +85,8 @@ cd digital-clockwork-simulator
 make clockwork
 ./builds/digitalClock input/days.week
 ```
+
+The command is identical on Linux, Windows, and macOS — the Makefile detects the host OS automatically and links the correct keyboard and audio implementation. On Windows, run this from an MSYS2/MinGW shell (or any shell where `g++` and `make` are on `PATH`); on macOS, a standard Terminal with Xcode Command Line Tools installed is enough.
 
 > **Note:** Never run `make` or the compiled binary with `sudo`. Doing so runs the process outside your user session, which breaks ALSA audio output (`Buzzer error: could not open audio device`). If `libevdev` fails to open `/dev/input/eventX` due to a permissions error, add your user to the `input` group instead — see [Known Limitations](#known-limitations) below.
 
@@ -81,41 +102,55 @@ And update the path in `src/keyboard_linux.cpp` accordingly.
 
 ```bash
 digital-clockwork-simulator
-├── assets                           # Images and graphical resources
-│   ├── clockwork-board.png
-│   ├── counter.png
-│   └── dividefreq.png
-├── docs                             # code and project documentation
+├── assets                            # Images and graphical resources
+│   ├── a_digital_clockwork
+│   │   ├── clockwork-board.png
+│   │   ├── counter.png
+│   │   ├── dividefreq.png
+│   │   └── simulator.png
+│   └── the_amazing_digital_alarm
+│       ├── alarm_trigger.png
+│       ├── day_comparator.png
+│       ├── day_counter.png
+│       ├── memory.png
+│       ├── project.png
+│       └── time_comparator.png
+├── docs                              # code and project documentation
 │   ├── documentation.pdf
 │   └── documentation.tex
-├── include                          # Header files
+├── include                           # Header files
+│   ├── audio_output.hpp
 │   ├── chips.hpp
 │   ├── digitalAlarm.hpp
 │   ├── digitalClockwork.hpp
 │   ├── feedback.hpp
 │   ├── freqGenerator.hpp
-│   └── keyboard.hpp                 # Platform-agnostic keyboard interface
-├── input                            # Input configurations to simulate the switches
+│   ├── keyboard.hpp
+│   └── keyState.hpp       
+├── input                             # Input configurations to simulate the switches
 │   └── days.week
-├── src                              # Source code files
+├── src                               # Source code files
+│   ├── audio_output_linux.cpp        # Linux audio implementation
+│   ├── audio_output_macintosh.cpp    # macOS audio implementation
+│   ├── audio_output_windows.cpp      # windows audio implementation
 │   ├── chips.cpp
 │   ├── digitalAlarm.cpp
 │   ├── digitalClockwork.cpp
 │   ├── feedback.cpp
 │   ├── freqGenerator.cpp
-│   ├── keyboard_linux.cpp           # Linux keyboard implementation (libevdev)
-│   ├── keyboard_windows.cpp         # Windows keyboard implementation (GetAsyncKeyState)
-│   ├── keyboard_macintosh.cpp       # macOS keyboard implementation (CGEventTap)
+│   ├── keyboard_linux.cpp            # Linux keyboard implementation (libevdev)
+│   ├── keyboard_macintosh.cpp        # macOS keyboard implementation (CGEventTap)
+│   ├── keyboard_windows.cpp          # Windows keyboard implementation (GetAsyncKeyState)
 │   └── main.cpp
-├── tests                            # Unit tests
+├── tests                             # Unit tests
+│   ├── 555test.cpp
 │   ├── 4013test.cpp 
 │   ├── 4017test.cpp 
 │   ├── 4029test.cpp 
 │   ├── 4040test.cpp
 │   ├── 4063test.cpp
 │   ├── 4511test.cpp
-│   ├── frequencytest.cpp
-│   └── keyboardtest.cpp
+│   └── frequencytest.cpp
 ├── .gitignore                       # Git ignored files configuration
 ├── LICENSE                          # Project license
 ├── Makefile                         # Build automation file
@@ -168,6 +203,8 @@ Comments are supported via `#`. The remaining configuration is done directly via
 * **macOS Accessibility permission.** As noted above, `CGEventTap` requires the compiled binary to be explicitly granted Accessibility permission, or it silently receives no keyboard events.
 * **Hardcoded Linux input device.** The Linux implementation reads from `/dev/input/event4` by default; this may need to be changed depending on the host machine's device enumeration (see Build and Run above).
 * **Window focus.** Keyboard capture is not tied to window focus on any platform: `libevdev` reads raw kernel events regardless of which window is active, `GetAsyncKeyState` polls global key state system-wide, and `CGEventTap` is a system-wide event tap. This means a tracked key (`F`, `S`, `P`, `A`, `R`, `D`) is registered by the simulator even if another application or window is focused, as long as the program is running.
+* **Duplication across platform files (audio).** Like the keyboard implementations, `audio_output_linux.cpp`, `audio_output_windows.cpp`, and `audio_output_macintosh.cpp` each implement the `Buzzer` interface independently, with no shared logic beyond `audio_output.hpp`. This is a deliberate tradeoff for the same reason as the keyboard: each platform file stays self-contained, at the cost of manual synchronization if the tone-generation logic changes.
+* **macOS audio buffering.** The CoreAudio implementation is callback-driven (`AudioQueue`) rather than blocking like ALSA/WinMM, so `Buzzer::run()` on macOS just pumps the run loop while the queue's callback pulls samples in the background — this is a structurally different execution model from the other two platforms, even though the public `Buzzer` interface is identical.
 
 ## Important Note
 
@@ -182,4 +219,5 @@ See the `LICENSE` file for more details.
 ## Fun Facts
 
 > This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
+> The name "The Amazing Digital Alarm" is a reference to the indie animated series_The Amazing Digital Circus_
 > Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

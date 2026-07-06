@@ -37,8 +37,8 @@ The simulator runs on **Linux, Windows, and macOS**. Keyboard capture is impleme
 
 Audio feedback (the alarm buzzer) follows the same pattern behind `include/audio_output.hpp`:
 
-| Platform | Implementation file                | Mechanism                                          |
-|----------|-------------------------------------|-----------------------------------------------------|
+| Platform | Implementation file                 | Mechanism                                            |
+|----------|-------------------------------------|------------------------------------------------------|
 | Linux    | `src/audio_output_linux.cpp`        | ALSA (`libasound`), blocking `snd_pcm_writei` writes |
 | Windows  | `src/audio_output_windows.cpp`      | WinMM (`waveOut*`), blocking buffer writes           |
 | macOS    | `src/audio_output_macintosh.cpp`    | CoreAudio `AudioQueue`, callback-driven buffer fill  |
@@ -218,6 +218,6 @@ See the `LICENSE` file for more details.
 
 ## Fun Facts
 
-> This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
-> The name "The Amazing Digital Alarm" is a reference to the indie animated series_The Amazing Digital Circus_
-> Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.
+> 1. This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
+> 2. The name "The Amazing Digital Alarm" is a reference to the indie animated series_The Amazing Digital Circus_
+> 3. Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

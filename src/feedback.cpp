@@ -3,6 +3,30 @@
 
 
 /*
+
+    Windows console defaults to a legacy code page (CP850/CP437), which garbles the UTF-8 LED symbols (◉/◎) printed by Display. 
+    This runs before main() starts, via static initialization, forcing the console to interpret and output UTF-8 correctly. 
+    No-op on Linux/macOS, where the terminal already handles UTF-8 natively.
+
+*/
+
+#ifdef _WIN32
+#include <windows.h>
+
+namespace {
+    struct ConsoleUTF8Setup {
+        ConsoleUTF8Setup() {
+            SetConsoleOutputCP(CP_UTF8);
+            SetConsoleCP(CP_UTF8);
+        }
+    };
+
+    ConsoleUTF8Setup consoleUTF8Setup;
+}
+#endif
+
+
+/*
     DISPLAY
 */
 

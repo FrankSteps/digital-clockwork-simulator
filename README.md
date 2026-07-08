@@ -1,6 +1,6 @@
 # A Digital Clockwork Simulator
 
-![digital clockwork logo](assets/a_digital_clockwork/digital_clockwork_color_logo.png)
+![a digital clockwork simulator logo](assets/a_digital_clockwork/digital_clockwork_color_logo.png)
 
 Viddy well, little brother. This project is queer, queer like a clockwork orange!
 
@@ -111,6 +111,10 @@ digital-clockwork-simulator
 │   │   ├── digital_clockwork_color_logo.png
 │   │   ├── dividefreq.png
 │   │   └── simulator.png
+│   ├── simulator
+│   │   ├── linux.png
+│   │   ├── macintosh.png
+│   │   └── windows.png
 │   └── the_amazing_digital_alarm
 │       ├── alarm_trigger.png
 │       ├── day_comparator.png
@@ -163,6 +167,8 @@ digital-clockwork-simulator
 ```
 
 ![The Digital Clockwork Simulator on linux](assets/simulator/linux.png)
+
+![The Digital Clockwork Simulator on macintosh](assets/simulator/macintosh.png)
 
 ![The Digital Clockwork Simulator on windows](assets/simulator/windows.png)
 

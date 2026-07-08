@@ -29,19 +29,19 @@ This repository serves as a personal experimental environment for:
 
 The simulator runs on **Linux, Windows, and macOS**. Keyboard capture is implemented separately for each platform behind a common interface (`include/keyboard.hpp`):
 
-| Platform | Implementation file          | Mechanism                                                      |
-|----------|------------------------------|----------------------------------------------------------------|
-| Linux    | `src/keyboard_linux.cpp`     | `libevdev`, reading raw kernel events from `/dev/input/eventX` |
-| Windows  | `src/keyboard_windows.cpp`   | `GetAsyncKeyState` (WinAPI), polling-based, no window required |
-| macOS    | `src/keyboard_macintosh.cpp` | `CGEventTap`, system-wide event tap, no window required        |
+| Platform | Implementation file                 | Mechanism                                                        |
+|----------|-------------------------------------|------------------------------------------------------------------|
+| Linux    | `src/keyboard_linux.cpp`            | `libevdev`, reading raw kernel events from `/dev/input/eventX`   |
+| Windows  | `src/keyboard_windows.cpp`          | `GetAsyncKeyState` (WinAPI), polling-based, no window required   |
+| macOS    | `src/keyboard_macintosh.cpp`        | `CGEventTap`, system-wide event tap, no window required          |
 
 Audio feedback (the alarm buzzer) follows the same pattern behind `include/audio_output.hpp`:
 
-| Platform | Implementation file                 | Mechanism                                            |
-|----------|-------------------------------------|------------------------------------------------------|
-| Linux    | `src/audio_output_linux.cpp`        | ALSA (`libasound`), blocking `snd_pcm_writei` writes |
-| Windows  | `src/audio_output_windows.cpp`      | WinMM (`waveOut*`), blocking buffer writes           |
-| macOS    | `src/audio_output_macintosh.cpp`    | CoreAudio `AudioQueue`, callback-driven buffer fill  |
+| Platform | Implementation file                 | Mechanism                                                        |
+|----------|-------------------------------------|------------------------------------------------------------------|
+| Linux    | `src/audio_output_linux.cpp`        | ALSA (`libasound`), blocking `snd_pcm_writei` writes             |
+| Windows  | `src/audio_output_windows.cpp`      | WinMM (`waveOut*`), blocking buffer writes                       |
+| macOS    | `src/audio_output_macintosh.cpp`    | CoreAudio `AudioQueue`, callback-driven buffer fill              |
 
 As with the keyboard, only one of these three files is compiled per platform, and `main.cpp` only interacts with `Buzzer` through the interface declared in `audio_output.hpp`.
 
@@ -219,5 +219,5 @@ See the `LICENSE` file for more details.
 ## Fun Facts
 
 > 1. This project's name is a reference to the dystopian novel *A Clockwork Orange* and this README was written using Nadsat terms such as "horrorshow" and "droog".
-> 2. The name "The Amazing Digital Alarm" is a reference to the indie animated series_The Amazing Digital Circus_
+> 2. The name "The Amazing Digital Alarm" is a reference to the indie animated series *The Amazing Digital Circus*
 > 3. Building this little horrorshow was almost as pleasurable as the good old (p)in-out, (p)in-out.

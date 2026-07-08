@@ -1,5 +1,7 @@
 # A Digital Clockwork Simulator
 
+![digital clockwork logo](assets/a_digital_clockwork/digital_clockwork_color_logo.png)
+
 Viddy well, little brother. This project is queer, queer like a clockwork orange!
 
 **A Digital Clockwork Simulator** is a digital clock circuit simulator inspired by a project created by Wagner Rambo and presented on his YouTube channel, **WR Kits**.
@@ -106,6 +108,7 @@ digital-clockwork-simulator
 │   ├── a_digital_clockwork
 │   │   ├── clockwork-board.png
 │   │   ├── counter.png
+│   │   ├── digital_clockwork_color_logo.png
 │   │   ├── dividefreq.png
 │   │   └── simulator.png
 │   └── the_amazing_digital_alarm
@@ -114,10 +117,12 @@ digital-clockwork-simulator
 │       ├── day_counter.png
 │       ├── memory.png
 │       ├── project.png
+│       ├── the_amazing_digital_alarm_logo.png
 │       └── time_comparator.png
-├── docs                              # code and project documentation
-│   ├── documentation.pdf
-│   └── documentation.tex
+├── report                            # project report
+│   ├── report.pdf
+│   ├── report.tex
+│   └── sbc-template.sty
 ├── include                           # Header files
 │   ├── audio_output.hpp
 │   ├── chips.hpp
@@ -157,7 +162,9 @@ digital-clockwork-simulator
 └── README.md                        # Project documentation
 ```
 
-![The Digital Clockwork Simulator + The Amazing Digital Alarm](assets/a_digital_clockwork/simulator.png)
+![The Digital Clockwork Simulator on linux](assets/simulator/linux.png)
+
+![The Digital Clockwork Simulator on windows](assets/simulator/windows.png)
 
 ## Using the Alarm and the Clockwork
 

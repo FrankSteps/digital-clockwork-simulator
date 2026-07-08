@@ -102,12 +102,12 @@ O simulador é organizado em dois grandes módulos de simulação interligados: 
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.72\textwidth]{./assets/a_digital_clockwork/simulator.png}
+    \includegraphics[width=0.72\textwidth]{../assets/a_digital_clockwork/simulator.png}
     \caption{Interface do \textit{A Digital Clockwork Simulator} renderizada no terminal (Linux).}
     \label{fig:simulator}
 
     \centering
-    \includegraphics[width=0.72\textwidth]{./assets/a_digital_clockwork/win.jpeg}
+    \includegraphics[width=0.72\textwidth]{../assets/a_digital_clockwork/win.jpeg}
     \caption{Interface no terminal (Windows).}
     \label{fig:win}
 \end{figure}
@@ -122,7 +122,7 @@ Os resets assíncronos — necessários para reiniciar a dezena de minutos ao at
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.78\textwidth]{./assets/a_digital_clockwork/counter.png}
+    \includegraphics[width=0.78\textwidth]{../assets/a_digital_clockwork/counter.png}
     \caption{Diagrama esquemático do módulo de contagem do relógio digital.}
     \label{fig:counter}
 \end{figure}
@@ -168,7 +168,7 @@ O módulo de alarme é implementado na classe \texttt{DigitalAlarm} (\texttt{inc
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.90\textwidth]{./assets/the_amazing_digital_alarm/project.png}
+    \includegraphics[width=0.90\textwidth]{../assets/the_amazing_digital_alarm/project.png}
     \caption{Esquema lógico estrutural do \textit{Amazing Digital Alarm}.}
     \label{fig:alarm}
     \vspace{0.1cm} 
@@ -181,7 +181,7 @@ O armazenamento do horário programado utiliza 9 instâncias do CD4013~\cite{ti:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.78\textwidth]{./assets/the_amazing_digital_alarm/memory.png}
+    \includegraphics[width=0.78\textwidth]{../assets/the_amazing_digital_alarm/memory.png}
     \caption{Diagrama do módulo de memória do alarme (CD4013).}
     \label{fig:memory}
     \vspace{0.1cm} 
@@ -194,7 +194,7 @@ A comparação entre o horário armazenado nos flip-flops e o barramento de temp
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.78\textwidth]{./assets/the_amazing_digital_alarm/time_comparator.png}
+    \includegraphics[width=0.78\textwidth]{../assets/the_amazing_digital_alarm/time_comparator.png}
     \caption{Cascata de comparadores de magnitude CD4063 para validação de horário.}
     \label{fig:time_comparator}
     \vspace{0.1cm} 
@@ -207,7 +207,7 @@ A configuração dos dias em que o alarme deve ser ativado é realizada por meio
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.78\textwidth]{./assets/the_amazing_digital_alarm/day_comparator.png}
+    \includegraphics[width=0.78\textwidth]{../assets/the_amazing_digital_alarm/day_comparator.png}
     \caption{Lógica de comparação de dia da semana com CD4081 e CD4071.}
     \label{fig:day_comparator}
     \vspace{0.1cm} 
@@ -220,7 +220,7 @@ A saída final do alarme resulta da combinação, por uma porta AND do CD4081[2]
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.78\textwidth]{./assets/the_amazing_digital_alarm/alarm_trigger.png}
+    \includegraphics[width=0.78\textwidth]{../assets/the_amazing_digital_alarm/alarm_trigger.png}
     \caption{Circuito de disparo e desarmamento do alarme.}
     \label{fig:alarm_trigger}
     \vspace{0.1cm} 

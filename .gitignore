@@ -1,6 +1,7 @@
 builds/
 .vscode/
 verilog/
+theory/
 
 *.exe
 *.out

@@ -161,6 +161,7 @@ digital-clockwork-simulator
 │   ├── 4511test.cpp
 │   └── frequencytest.cpp
 ├── .gitignore                       # Git ignored files configuration
+├── CONTRIBUTING                     # Guidelines for contributing to the project
 ├── LICENSE                          # Project license
 ├── Makefile                         # Build automation file
 └── README.md                        # Project documentation

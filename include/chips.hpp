@@ -175,9 +175,9 @@ class Chip4063 {
 // Flip-Flops D
 class Chip4013 {
     private:
-        std::array<bool, 2> output;                  // Q
+        std::array<bool, 2> output;                  // Q 
         std::array<bool, 2> negOutput;               // ~Q
-        std::array<bool, 2> data;                    // D
+        std::array<bool, 2> data;                    // D 
 
         void updateOutputs(size_t flipflop);
 

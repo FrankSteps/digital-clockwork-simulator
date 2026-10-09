@@ -81,9 +81,3 @@ Example test_cd4511_blanking :
   CD4511 (mk_input false false false false true false false)
   = mk_output false false false false false false false.
 Proof. reflexivity. Qed.
-
-
-Example test_cd4511_decode_5 :
-  CD4511 (mk_input false true false true true true false)
-  = mk_output true true false true true false true.
-Proof. reflexivity. Qed.

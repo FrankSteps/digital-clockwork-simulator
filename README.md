@@ -12,6 +12,7 @@ This simulator was developed as a way to study digital circuit behavior, low-lev
 
 This horrorshow is based on a digital clock circuit designed by Wagner Rambo and showcased on his YouTube channel: **WR Kits**.
 Below is an image of the original hardware project:
+
 ![Original clock circuit](assets/a_digital_clockwork/clockwork-board.png)
 
 ## Purpose of This Repository
@@ -112,11 +113,11 @@ digital-clockwork-simulator
 │   └── settings.json                 # files associations
 ├── assets                            # Images and graphical resources
 │   ├── a_digital_clockwork
+│   │   ├── clockwork-1000x.png
 │   │   ├── clockwork-board.png
 │   │   ├── counter.png
 │   │   ├── digital_clockwork_color_logo.png
-│   │   ├── dividefreq.png
-│   │   └── simulator.png
+│   │   └── dividefreq.png
 │   ├── simulator
 │   │   ├── linux.png
 │   │   ├── macintosh.png
@@ -171,7 +172,14 @@ digital-clockwork-simulator
 │   │   ├── mathematical_formulation.pdf
 │   │   └── mathematical_formulation.tex
 │   └── verification                 # Formal proofs of chip behavior, written in Rocq
-│       └── cd4063.v
+│       ├── cd4063
+│       │   └── cd4063.v
+│       ├── cd4071
+│       │   └── cd4071.v
+│       ├── cd4081
+│       │   └── cd4081.v
+│       └── cd4511
+│           └── cd4511.v
 ├── verilog
 │   └── rtl                          # Register-transfer level hardware descriptions
 │       └── chips                    # One module per chip, mirrors theory/verification

@@ -1,6 +1,6 @@
-# A Digital Clockwork Simulator
-
-![a digital clockwork simulator logo](assets/a_digital_clockwork/digital_clockwork_color_logo.png)
+<p align="center">
+  <img src="assets/a_digital_clockwork/clockwork-1000x.png" alt="A digital clockwork" width="1000">
+</p>
 
 Viddy well, little brother. This project is queer, queer like a clockwork orange!
 
